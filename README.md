@@ -1,0 +1,1 @@
+# plugins-rabbit-loader
