@@ -122,7 +122,7 @@ class RabbitLoader_21_Tab_Help
             foreach ($posts as $post) {
                 $posts = '<ul class="my-0" style="list-style:square;">';
                 foreach ($post['posts'] as $data) {
-                    $posts .= '<li><a class="text-secondary" href="' . $data['link'] . '" target="_blank" title="Read more" style="text-decoration:none;">' . $data['title']  . '</a></li>';
+                    $posts .= '<li><a class="text-secondary" href="' . esc_url($data['link']) . '" target="_blank" title="Read more" style="text-decoration:none;">' . $data['title']  . '</a></li>';
                 }
                 $posts .= '</ul>';
                 self::getKBBox($post['category_name'] . ' related articles', $posts);

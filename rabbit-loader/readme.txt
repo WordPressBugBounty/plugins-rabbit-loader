@@ -3,7 +3,7 @@ Contributors: sanrl, abhishekgr
 Tags: cache, CDN, lazy loading, speed optimization, pagespeed
 Requires at least: 4.7
 Tested up to: 6.6
-Stable tag: 2.21.0
+Stable tag: 2.21.1
 Requires PHP: 5.6
 License: GNU General Public License, version 2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -229,9 +229,11 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= 2.21.1 =
+* Security enhancements
+
 = 2.21.0 =
 * New feature to analyze the page performance metrics
-
 
 = 2.20.1, 2.20.2 =
 * Re-release changes of 2.20.0 due to svn commit issue

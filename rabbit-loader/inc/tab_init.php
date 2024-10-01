@@ -84,7 +84,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
         echo '<div id="icon-themes" class="icon32"><br></div>';
         echo '<h2 class="nav-tab-wrapper">';
         foreach ($tabs as $tab => $name) {
-            $url = add_query_arg(array('tab' => $tab, 'page' => $page));
+            $url = esc_url(add_query_arg(array('tab' => $tab, 'page' => $page)));
             $class = ($tab == $activeTab) ? ' nav-tab-active' : '';
             echo "<a class='nav-tab $class' href='$url'>";
             RL21UtilWP::_e($name);
@@ -115,7 +115,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
     protected static function getTabUrl($tab_key)
     {
         $page = RabbitLoader_21_Util_Core::get_param('page');
-        return add_query_arg(array('tab' => $tab_key, 'page' => $page));
+        return esc_url(add_query_arg(array('tab' => $tab_key, 'page' => $page)));
     }
 
     protected static function &getOverviewData(&$apiError = '', &$apiMessage = '')
@@ -302,7 +302,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
 
     protected static function getUpgradeLink($utm_term, $plan_title)
     {
-        return RabbitLoader_21_Core::getRLDomain() . "pricing/?utm_source=wordpress&utm_medium=plugin&utm_term=$utm_term#domain=" . urlencode(get_home_url()) . "/";
+        return esc_url(RabbitLoader_21_Core::getRLDomain() . "pricing/?utm_source=wordpress&utm_medium=plugin&utm_term=$utm_term#domain=" . urlencode(get_home_url()) . "/");
     }
 
     private static function check_varnish($attempts)

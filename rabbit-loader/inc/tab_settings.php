@@ -8,18 +8,15 @@ if (class_exists('RabbitLoader_21_Tab_Settings')) {
 class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
 {
 
-    public static function init()
-    {
-    }
+    public static function init() {}
 
     public static function echoMainContent()
     {
 
         $isConnected = self::isPluginActivated();
-
-        $rlaction = RabbitLoader_21_Util_Core::get_param('rlaction');
-        $page = RabbitLoader_21_Util_Core::get_param('page');
-        $tab = RabbitLoader_21_Util_Core::get_param('tab');
+        $rlaction = sanitize_text_field(RabbitLoader_21_Util_Core::get_param('rlaction'));
+        $page = sanitize_text_field(RabbitLoader_21_Util_Core::get_param('page'));
+        $tab = sanitize_text_field(RabbitLoader_21_Util_Core::get_param('tab'));
 
         $urlparts = parse_url(home_url());
         $domain = $urlparts['scheme'] . '://' . $urlparts['host'];
@@ -30,7 +27,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
         if (strcmp($rlaction, 'disconnect') === 0) {
             RabbitLoader_21_Core::update_api_tokens('', '', '', 'user action disconnect');
             $isConnected = false;
-            $url_connect = add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => false));
+            $url_connect = esc_url(add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => false)));
             echo '<script>window.location="' . $url_connect . '";</script>';
             return;
         } else if (strcmp($rlaction, 'savekeys') === 0) {
@@ -50,13 +47,13 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
             }
 
             if ($connected) {
-                $url_connect = add_query_arg(array('tab' => 'home', 'page' => $page, 'rlaction' => false, 'token' => false));
+                $url_connect = esc_url(add_query_arg(array('tab' => 'home', 'page' => $page, 'rlaction' => false, 'token' => false)));
                 do_action('rl_site_connected');
                 echo '<script>window.location="' . $url_connect . '";</script>';
             }
         }
         if ($isConnected) {
-            $url_disconnect = add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => 'disconnect'));
+            $url_disconnect = esc_url(add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => 'disconnect')));
 ?>
             <div class="" style="max-width: 1160px; margin:40px auto;">
                 <?php
@@ -73,8 +70,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
 
             $url_redirect = $domain . add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => 'savekeys'));
 
-            $url_oauth = RabbitLoader_21_Core::getRLDomain() . "account/?source=wp-plugin&action=connect&site_url=" . urlencode(site_url()) . "&redirect_url=" . urlencode($url_redirect) . '&cms_v=' . get_bloginfo('version') . '&plugin_v=' . RABBITLOADER_PLUG_VERSION;
-
+            $url_oauth = esc_url(RabbitLoader_21_Core::getRLDomain() . "account/?source=wp-plugin&action=connect&site_url=" . urlencode(site_url()) . "&redirect_url=" . urlencode($url_redirect) . '&cms_v=' . get_bloginfo('version') . '&plugin_v=' . RABBITLOADER_PLUG_VERSION);
         ?>
             <style>
                 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");

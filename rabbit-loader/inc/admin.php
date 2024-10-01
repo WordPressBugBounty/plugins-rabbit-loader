@@ -100,9 +100,7 @@ class RabbitLoader_21_Admin
         //listeners for taxonomy changes
     }
 
-    public static function init()
-    {
-    }
+    public static function init() {}
 
     public static function leftMenuOption()
     {
@@ -206,8 +204,8 @@ class RabbitLoader_21_Admin
             return;
         }
 
-        $remindLaterURL = add_query_arg('rl_survey_dismissed', time());
-        $remindNeverURL = add_query_arg('rl_survey_dismissed', self::SURVEY_DIS_PERMA);
+        $remindLaterURL = esc_url(add_query_arg('rl_survey_dismissed', time()));
+        $remindNeverURL = esc_url(add_query_arg('rl_survey_dismissed', self::SURVEY_DIS_PERMA));
         echo '<div class="notice notice-info is-dismissible rl_survey_notice" style="background: #f4f4f4; color: #1d2327; border-width: 1px; border-style: solid; border-color: #1d2327; padding: 1rem 1rem; border-radius: 5px;"><div style="float:left; padding-right:1rem;"><img src="' . RABBITLOADER_PLUG_URL . '/assets/icon-dark.svg" width="100" /></div>';
         echo '<p class="p1">';
         RL21UtilWP::_e("Enjoying RabbitLoader? 🚀");
