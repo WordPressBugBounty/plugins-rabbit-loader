@@ -2,8 +2,8 @@
 Contributors: sanrl, abhishekgr
 Tags: cache, CDN, lazy loading, speed optimization, pagespeed
 Requires at least: 4.7
-Tested up to: 6.6
-Stable tag: 2.21.1
+Tested up to: 6.7.1
+Stable tag: 2.22.1
 Requires PHP: 5.6
 License: GNU General Public License, version 2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -228,6 +228,13 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 5. Connect your WordPress website with RabbitLoader account with one click.
 
 == Changelog ==
+
+= 2.22.0 =
+* Feature to control default optimization
+* Compatible with latest WordPress version 6.7
+* User with Contributor, Author and Editor role can purge cache for any post or page
+* Speed improvements for Kinsta
+* Bugfix: duplicate meta tag generation in some cases
 
 = 2.21.1 =
 * Security enhancements

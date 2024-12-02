@@ -57,11 +57,11 @@ class API
             $fields = [
                 'url_b64' => base64_encode($url),
                 'html' => $html,
-                'headers' => $headers
+                'headers' => $headers,
+                'plugins' => []
             ];
-            if ($this->debug) {
-                Util::sendHeader('x-rl-url_b64: ' . $fields['url_b64'], true);
-                Util::sendHeader('x-rl-html_len: ' . strlen($html), true);
+            if (WordPress::isWp()) {
+                $fields['plugins'] = WordPress::plugins();
             }
             $this->remote('page/get_cache', $fields, $result, $httpCode);
             if (!empty($result['data']['html'])) {

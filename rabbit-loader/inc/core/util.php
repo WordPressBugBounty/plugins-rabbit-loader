@@ -53,4 +53,9 @@ class RabbitLoader_21_Util_Core
     {
         return strtok($_SERVER["REQUEST_URI"], '?');
     }
+
+    public static function isRLPage()
+    {
+        return self::get_param('page') === 'rabbitloader';
+    }
 }

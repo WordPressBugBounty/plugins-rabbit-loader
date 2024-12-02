@@ -41,7 +41,7 @@ class RabbitLoader_21_Public
 
     public static function init()
     {
-        if (current_user_can('manage_options')) {
+        if (current_user_can('manage_options') || current_user_can('edit_posts')) {
             add_action('admin_bar_menu', 'RabbitLoader_21_Public::adminBarMenu', 50);
             add_action('wp_enqueue_scripts', 'RabbitLoader_21_Public::adminBarScript');
         }
@@ -53,9 +53,7 @@ class RabbitLoader_21_Public
         }
     }
 
-    public static function shutdown()
-    {
-    }
+    public static function shutdown() {}
 
     private static function can_cache_request()
     {

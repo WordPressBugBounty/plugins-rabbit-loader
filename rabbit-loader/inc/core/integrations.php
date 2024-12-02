@@ -206,12 +206,13 @@ class RabbitLoader_21_TP
                 'timeout'   => 5
             ]);
         } elseif ($purge_type == self::PURGE_URL) {
-            $response = wp_remote_post('https://localhost/kinsta-clear-cache/v2/immediate', [
+            $path = parse_url($url_id, PHP_URL_PATH);
+            if (empty($path)) {
+                $path = '/';
+            }
+            $response = wp_remote_get(home_url() . "/kinsta-clear-cache/$path", [
                 'sslverify' => false,
-                'timeout'   => 5,
-                'body'      => [
-                    'single' => preg_replace('@^https?://@', '', $url_id)
-                ]
+                'timeout'   => 5
             ]);
         }
         return true;

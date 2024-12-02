@@ -19,7 +19,15 @@ class RabbitLoader_21_Admin
         add_action('network_admin_notices', 'RabbitLoader_21_Admin::admin_notices');
         add_action('admin_menu', 'RabbitLoader_21_Admin::leftMenuOption');
         add_action('admin_enqueue_scripts', function () {
-            wp_enqueue_script('rabbitloader-index', RABBITLOADER_PLUG_URL . 'admin/js/index.js', ['jquery'], RABBITLOADER_PLUG_VERSION);
+            $dependencies = ['jquery'];
+            if (RabbitLoader_21_Util_Core::isRLPage()) {
+                wp_enqueue_script('rabbitloader-react', 'https://unpkg.com/react@18/umd/react.production.min.js', [], false);
+                wp_enqueue_script('rabbitloader-react-dom', 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js', [], false);
+                $dependencies[] = 'rabbitloader-react';
+                $dependencies[] = 'rabbitloader-react-dom';
+            }
+
+            wp_enqueue_script('rabbitloader-index', RABBITLOADER_PLUG_URL . 'admin/js/index.js', $dependencies, RABBITLOADER_PLUG_VERSION);
             $localVars = [
                 'admin_ajax' => admin_url('admin-ajax.php'),
                 'rl_nonce' => wp_create_nonce('rl-ajax-nonce'),
@@ -116,14 +124,13 @@ class RabbitLoader_21_Admin
             20
         );
 
-        $page = RabbitLoader_21_Util_Core::get_param('page');
-
-        if (strcmp($page, 'rabbitloader') === 0) {
+        if (RabbitLoader_21_Util_Core::isRLPage()) {
             add_action('admin_head', 'admin_styles', 10, 1);
             function admin_styles($a)
             {
                 echo '<link rel="stylesheet" href="' . RABBITLOADER_PLUG_URL . 'admin/css/bootstrap.v5.1.3.min.css' . '" type="text/css" media="all" />
-                <link rel="stylesheet" href="' . RABBITLOADER_PLUG_URL . 'admin/css/style.css?v=' . RABBITLOADER_PLUG_VERSION . '" type="text/css" media="all" />';
+                <link rel="stylesheet" href="' . RABBITLOADER_PLUG_URL . 'admin/css/style.css?v=' . RABBITLOADER_PLUG_VERSION . '" type="text/css" media="all" />
+                 <link rel="stylesheet" href="' . RABBITLOADER_PLUG_URL . 'admin/css/mfe-patches.css?v=' . RABBITLOADER_PLUG_VERSION . '" type="text/css" media="all" />';
             }
         }
         add_action('admin_head', function () {

@@ -25,7 +25,10 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
 
                     self::echoTabBar($tab);
 
-                    if ($tab == 'settings') {
+                    if ($tab == 'exclusions') {
+                        RabbitLoader_21_Tab_Exclusions::init();
+                        RabbitLoader_21_Tab_Exclusions::echoMainContent();
+                    } else if ($tab == 'settings') {
                         RabbitLoader_21_Tab_Settings::init();
                         RabbitLoader_21_Tab_Settings::echoMainContent();
                     } else if ($tab == 'help') {
@@ -78,6 +81,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
             'css' => 'Critical CSS',
             'usage' => 'Usage',
             'settings' => 'Settings',
+            'exclusions' => 'Exclusions',
             'log' => 'Notifications',
             'help' => 'Help'
         ];
