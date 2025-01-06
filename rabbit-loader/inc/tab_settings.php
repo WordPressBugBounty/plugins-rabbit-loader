@@ -69,7 +69,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
 
             $url_redirect = $domain . add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => 'savekeys'));
 
-            $url_oauth = esc_url(RabbitLoader_21_Core::getRLDomain() . "account/?source=wp-plugin&action=connect&site_url=" . urlencode(site_url()) . "&redirect_url=" . urlencode($url_redirect) . '&cms_v=' . get_bloginfo('version') . '&plugin_v=' . RABBITLOADER_PLUG_VERSION);
+            $url_oauth = esc_url(RabbitLoader_21_Core::getRLBaseDomain() . "account/?source=wp-plugin&action=connect&site_url=" . urlencode(site_url()) . "&redirect_url=" . urlencode($url_redirect) . '&cms_v=' . get_bloginfo('version') . '&plugin_v=' . RABBITLOADER_PLUG_VERSION . '&utm_source=wordpress&utm_medium=plugin&utm_content=activate-rabbitLoader');
         ?>
             <style>
                 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
@@ -83,7 +83,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
                     <p>on Google PageSpeed Insight</p>
 
                     <?php
-                    $conflictPluginMessages = RabbitLoader_21_Conflicts::getMessages();
+                    $conflictPluginMessages = RabbitLoader_21_Conflicts::getMessages(true);
                     if (empty($conflictPluginMessages)) {
                         echo '<a href="' . $url_oauth . '" class="rl-btn rl-btn-primary rl-btn-lg my-4">Activate RabbitLoader</a>';
                     } else {

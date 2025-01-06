@@ -3,7 +3,7 @@
 define('RABBITLOADER_PLUG_DIR', plugin_dir_path(__FILE__));
 define('RABBITLOADER_CACHE_DIR', WP_CONTENT_DIR . DIRECTORY_SEPARATOR . "rabbitloader");
 define('RABBITLOADER_PLUG_URL', plugin_dir_url(__FILE__));
-define('RABBITLOADER_PLUG_VERSION', '2.22.1');
+define('RABBITLOADER_PLUG_VERSION', '2.22.2');
 define('RABBITLOADER_TEXT_DOMAIN', 'rabbit-loader');
 define('RABBITLOADER_PLUG_ENV', 'PROD');
 if (!defined('JSON_INVALID_UTF8_IGNORE')) {

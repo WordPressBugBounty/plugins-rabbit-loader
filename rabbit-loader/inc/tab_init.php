@@ -142,7 +142,8 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
             'plan_title' => 0,
             'plan_end_date' => 0,
             'image_comp_avg_cp' => 0,
-            'css_size_pp' => 0
+            'css_size_pp' => 0,
+            'home_page_url_id' => ''
         ];
 
         $http = RabbitLoader_21_Core::callGETAPI('report/overview', $apiError, $apiMessage);
@@ -210,6 +211,9 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
         $optimized_url_per = empty($overview['canonical_url_count']) ? 0 : ($overview['optimized_url_count'] / $overview['canonical_url_count']) * 100;
         $overview['optimized_url_per'] = round($optimized_url_per, 1);
 
+        if (!empty($http['body']['data']['home_page_url_id'])) {
+            $overview['home_page_url_id'] = $http['body']['data']['home_page_url_id'];
+        }
 
         RabbitLoader_21_Core::getWpOption($rl_wp_options);
         if (!empty($http['body']['data']['rl_latest_plugin_v'])) {
@@ -306,7 +310,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
 
     protected static function getUpgradeLink($utm_term, $plan_title)
     {
-        return esc_url(RabbitLoader_21_Core::getRLDomain() . "pricing/?utm_source=wordpress&utm_medium=plugin&utm_term=$utm_term#domain=" . urlencode(get_home_url()) . "/");
+        return esc_url(RabbitLoader_21_Core::getRLBaseDomain() . "pricing/?utm_source=wordpress&utm_medium=plugin&utm_term=$utm_term&utm_content=$utm_term#domain=" . urlencode(get_home_url()) . "/");
     }
 
     private static function check_varnish($attempts)
@@ -345,7 +349,8 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
             'domain_id' => RabbitLoader_21_Core::getWpOptVal('did'),
             'rl_nonce' => wp_create_nonce('rl-ajax-nonce'),
             'api_token' => RabbitLoader_21_Core::getWpOptVal('api_token'),
-            'plan_title' => isset($overview['plan_title']) ? $overview['plan_title'] : ''
+            'plan_title' => isset($overview['plan_title']) ? $overview['plan_title'] : '',
+            'home_page_url_id' => isset($overview['home_page_url_id']) ? $overview['home_page_url_id'] : ''
         ];
         //wp_add_inline_script('rabbitloader-index', 'RLAdmin.Tab(window, ' . json_encode($tabVars) . ');');
         echo '<script>RLAdmin.Tab(window, ' . json_encode($tabVars) . ');</script>';

@@ -5,12 +5,12 @@ class RabbitLoader_21_Conflicts
 
     private static $messages = null;
 
-    public static function &getMessages()
+    public static function &getMessages($isActivationFlow)
     {
         if (self::$messages == null) {
             self::$messages = [];
             self::runSystemChecks();
-            self::runConflictsCheck();
+            self::runConflictsCheck($isActivationFlow);
         }
         return self::$messages;
     }
@@ -22,7 +22,7 @@ class RabbitLoader_21_Conflicts
         }
     }
 
-    private static function runConflictsCheck()
+    private static function runConflictsCheck($isActivationFlow)
     {
 
         $otherConflictPluginNames = [];
@@ -49,7 +49,7 @@ class RabbitLoader_21_Conflicts
             'WP_SMUSH_VERSION' => 'Smush',
             'WPFC_WP_PLUGIN_DIR' => 'WP Fastest Cache',
             'WPFC_MAIN_PATH' => 'WP Fastest Cache',
-            'WPHB_VERSION' => 'Hummingbird',
+            'WPHB_SUI_VERSION' => 'Hummingbird', //WPHB_VERSION conflicts with WP Hotel Booking plugin
             'WPMETEOR_VERSION' => 'WP Meteor'
 
         ];
@@ -74,10 +74,20 @@ class RabbitLoader_21_Conflicts
                 $otherConflictPluginNames[] = $plugName;
             }
         }
+        // $consts = get_defined_constants();
+        // foreach ($consts as $const) {
+        //     if (strpos($const, 'WPHB_') !== false) {
+        //         self::$messages[] = $const . '=' . constant($const);
+        //     }
+        // }
         if (!empty($otherConflictPluginNames)) {
             $otherConflictPluginNames = array_unique($otherConflictPluginNames);
             foreach ($otherConflictPluginNames as $plugName) {
-                self::$messages[] = sprintf(RL21UtilWP::__("It seems you are also using %s plugin which conflicts with RabbitLoader optimizations. We suggest deactivating %s and hit the 'Purge All Pages' button on the RabbitLoader home tab."), $plugName, $plugName);
+                if ($isActivationFlow) {
+                    self::$messages[] = sprintf(RL21UtilWP::__("It seems you are also using %s plugin which conflicts with RabbitLoader optimizations. We suggest deactivating %s and reload this page."), $plugName, $plugName);
+                } else {
+                    self::$messages[] = sprintf(RL21UtilWP::__("It seems you are also using %s plugin which conflicts with RabbitLoader optimizations. We suggest deactivating %s and hit the 'Purge All Pages' button on the RabbitLoader home tab."), $plugName, $plugName);
+                }
             }
         }
 

@@ -58,10 +58,16 @@ class RabbitLoader_21_Core
         RabbitLoader_21_Core::updateWpOption($rl_wp_options);
     }
 
-    public static function getRLDomain()
+    public static function getRLBaseDomain()
     {
         return RabbitLoader_21_Util_Core::isDev() ? 'https://rabbitloader.local/' : 'https://rabbitloader.com/';
     }
+
+    public static function getRLDomainV1()
+    {
+        return RabbitLoader_21_Util_Core::isDev() ? 'https://api-v1.rabbitloader.local/' : 'https://api-v1.rabbitloader.com/';
+    }
+
     public static function getRLDomainV2()
     {
         return RabbitLoader_21_Util_Core::isDev() ? 'https://api-v2.rabbitloader.local/' : 'https://api-v2.rabbitloader.com/';
@@ -89,7 +95,7 @@ class RabbitLoader_21_Core
             $apiError = 'Keys could not be added';
             return $http;
         }
-        $url = RabbitLoader_21_Core::getRLDomain() . 'api/v1/';
+        $url = RabbitLoader_21_Core::getRLDomainV1() . 'api/v1/';
         if (strpos($endpoint, '?')) {
             $endpoint .= '&';
         } else {
@@ -196,7 +202,7 @@ class RabbitLoader_21_Core
             $apiError = 'Keys could not be added';
             return $http;
         }
-        $url = RabbitLoader_21_Core::getRLDomain() . 'api/v1/';
+        $url = RabbitLoader_21_Core::getRLDomainV1() . 'api/v1/';
 
         $body['domain'] = $rabbitloader_field_domain;
         $body['plugin_cms'] = 'wp';

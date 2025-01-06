@@ -16,26 +16,6 @@ final class RabbitLoader_21_Tab_Usage extends RabbitLoader_21_Tab_Init
             '',
             'rabbitloader-usage'
         );
-        $start_date = date("Y-m-d", strtotime('-30 days'));
-        $end_date = date("Y-m-d");
-        $tbl = "RLUsageData.initV2(`" . RabbitLoader_21_Core::getWpOptVal('domain') . "`, `" . RabbitLoader_21_Core::getRLDomain() . "`, `" . RabbitLoader_21_Core::getWpOptVal('api_token') . "`, `" . $start_date . "`, `" . $end_date . "`);";
-        //const elBW = document.querySelector('#d3-area-stacked-nest-bandwidth');charts.mountBW(elBW, false)
-
-        $tbl = "
-        const charts = window.rlCharts.Charts
-
-        const elPV = document.querySelector('#d3-area-stacked-nest-pageview');
-        charts.mountPV(elPV, false)
-
-        charts.init({
-            apiHost: `" . RabbitLoader_21_Core::getRLDomainV2() . "`,
-            domainID: `" . RabbitLoader_21_Core::getWpOptVal('did') . "`,
-            jwt: `" . RabbitLoader_21_Core::getWpOptVal('api_token') . "`,
-        })
-        charts.setDate(`" . $start_date . "`, `" . $end_date . "`)";
-
-        wp_enqueue_script('rabbitloader-usage-js', 'https://cfw.rabbitloader.xyz/rl/mfe/rl.charts.v3.10.8.js', [], null);
-        wp_add_inline_script('rabbitloader-usage-js', $tbl);
     }
 
     public static function echoMainContent()
@@ -63,19 +43,9 @@ final class RabbitLoader_21_Tab_Usage extends RabbitLoader_21_Tab_Init
                 </div>
             </div>
 
-            <!-- <div class="row mb-4">
-                <div class="col-12">
-                    <div class="bg-white rounded pb-2">
-                        <div class="mb-4" id="d3-area-stacked-nest-bandwidth" style="height:400px; width:100%;max-width:100%;border: none; box-shadow:none;"></div>
-                    </div>
-                </div>
-            </div> -->
-
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="bg-white rounded pb-2">
-                        <div class="" id="d3-area-stacked-nest-pageview" style="height:400px; width:100%;max-width:100%;border: none; box-shadow:none;"></div>
-                    </div>
+                    <div id="mfe_page_views" style="height:400px; width:100%;max-width:100%;border: none; box-shadow:none;"></div>
                 </div>
             </div>
 

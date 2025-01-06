@@ -1,13 +1,15 @@
 <?php
 
-if(class_exists('RabbitLoader_21_Tab_Images')){
+if (class_exists('RabbitLoader_21_Tab_Images')) {
     #it seems we have a conflict
     return;
 }
 
-final class RabbitLoader_21_Tab_Images extends RabbitLoader_21_Tab_Init{
+final class RabbitLoader_21_Tab_Images extends RabbitLoader_21_Tab_Init
+{
 
-    public static function init(){
+    public static function init()
+    {
         add_settings_section(
             'rabbitloader_section_image',
             ' ',
@@ -15,17 +17,18 @@ final class RabbitLoader_21_Tab_Images extends RabbitLoader_21_Tab_Init{
             'rabbitloader-image'
         );
 
-        $tbl = "RLImageData.initV2(rabbitloader_local_vars.hostname, `".RabbitLoader_21_Core::getRLDomain()."`, `".RabbitLoader_21_Core::getWpOptVal('api_token')."`);";
+        $tbl = "RLImageData.initV2(rabbitloader_local_vars.hostname, `" . RabbitLoader_21_Core::getRLDomainV1() . "`, `" . RabbitLoader_21_Core::getWpOptVal('api_token') . "`);";
 
-        wp_enqueue_script('rabbitloader-img-js', RabbitLoader_21_Core::getRLDomain().'account/common/js/report_img.js', [], RABBITLOADER_PLUG_VERSION);
+        wp_enqueue_script('rabbitloader-img-js', RabbitLoader_21_Core::getRLBaseDomain() . 'account/common/js/report_img.js', [], RABBITLOADER_PLUG_VERSION);
         wp_add_inline_script('rabbitloader-img-js', $tbl);
     }
 
-    public static function echoMainContent(){
+    public static function echoMainContent()
+    {
 
-        do_settings_sections( 'rabbitloader-image' );
+        do_settings_sections('rabbitloader-image');
 
-        ?>
+?>
         <div class="" style="max-width: 1160px; margin:40px auto;">
 
             <div class="row mb-4 d-none" id="rl_alert_no_images">
@@ -35,11 +38,11 @@ final class RabbitLoader_21_Tab_Images extends RabbitLoader_21_Tab_Init{
             </div>
 
             <div class="row mb-4">
-                <?php 
-                echo self::getStatsWidget(0, 'Total Images','rl_total_images');
-                echo self::getStatsWidget(0, 'Original Size','rl_original_size');
-                echo self::getStatsWidget(0, 'Optimized Size (WebP)','rl_webp_size');
-                echo self::getStatsWidget(0, 'Size Improvement','rl_reductio_p');
+                <?php
+                echo self::getStatsWidget(0, 'Total Images', 'rl_total_images');
+                echo self::getStatsWidget(0, 'Original Size', 'rl_original_size');
+                echo self::getStatsWidget(0, 'Optimized Size (WebP)', 'rl_webp_size');
+                echo self::getStatsWidget(0, 'Size Improvement', 'rl_reductio_p');
                 ?>
             </div>
             <div class="row mb-4">
@@ -61,7 +64,7 @@ final class RabbitLoader_21_Tab_Images extends RabbitLoader_21_Tab_Init{
                             </div>
                         </div>
                     </div>
-                </div>    
+                </div>
             </div>
 
             <div class="row mb-4">
@@ -74,7 +77,7 @@ final class RabbitLoader_21_Tab_Images extends RabbitLoader_21_Tab_Init{
                             </div>
                             <div class="col-12">
                                 <div class="p-4" id="img_recent">
-                                
+
                                 </div>
                             </div>
                         </div>
@@ -82,15 +85,16 @@ final class RabbitLoader_21_Tab_Images extends RabbitLoader_21_Tab_Init{
                 </div>
             </div>
         </div>
-        <?php
+<?php
     }
 
-    private static function getStatsWidget($val, $lbl, $id){
+    private static function getStatsWidget($val, $lbl, $id)
+    {
         $html = '
         <div class="col">
             <div class="bg-white rounded p-4">
-                <h4 class="" id="'.$id.'">'.$val.'</h4>
-                <span class="text-secondary mt-2">'.RL21UtilWP::__($lbl).'</span>
+                <h4 class="" id="' . $id . '">' . $val . '</h4>
+                <span class="text-secondary mt-2">' . RL21UtilWP::__($lbl) . '</span>
             </div>
         </div>';
         return $html;

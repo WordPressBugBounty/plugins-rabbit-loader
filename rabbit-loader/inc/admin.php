@@ -259,7 +259,7 @@ class RabbitLoader_21_Admin
 
             self::$rabbitloader_cache_warnings = [];
 
-            $otherConflictPluginMessages = RabbitLoader_21_Conflicts::getMessages();
+            $otherConflictPluginMessages = RabbitLoader_21_Conflicts::getMessages(false);
             foreach ($otherConflictPluginMessages as $plugMessage) {
                 self::$rabbitloader_cache_warnings[] = $plugMessage;
             }
@@ -316,7 +316,7 @@ class RabbitLoader_21_Admin
     {
 
         try {
-            if (!empty(RabbitLoader_21_Conflicts::getMessages())) {
+            if (!empty(RabbitLoader_21_Conflicts::getMessages(false))) {
                 return 1;
             }
 

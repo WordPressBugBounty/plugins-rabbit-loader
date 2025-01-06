@@ -2,7 +2,9 @@
     margin-top: 30px;
 }
 
-.rl-mfe-pr.MuiPaper-root {
+.rl-mfe-pr.MuiPaper-root,
+.rl-mfe-tpv.MuiPaper-root,
+.rl-mfe-perf-sum.MuiPaper-root {
     border-radius: 0.25rem !important
 }
 

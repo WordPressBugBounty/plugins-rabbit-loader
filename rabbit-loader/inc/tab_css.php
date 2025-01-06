@@ -17,11 +17,11 @@ final class RabbitLoader_21_Tab_Css extends RabbitLoader_21_Tab_Init
             'rabbitloader-css'
         );
 
-        $tbl = "RLCssData.initV2(`" . RabbitLoader_21_Core::getWpOptVal('domain') . "`, `" . RabbitLoader_21_Core::getRLDomain() . "`, `" . RabbitLoader_21_Core::getWpOptVal('api_token') . "`, `table_page_css`,``);";
+        $tbl = "RLCssData.initV2(`" . RabbitLoader_21_Core::getWpOptVal('domain') . "`, `" . RabbitLoader_21_Core::getRLDomainV1() . "`, `" . RabbitLoader_21_Core::getWpOptVal('api_token') . "`, `table_page_css`,``);";
 
         self::addDtDependencies();
 
-        wp_enqueue_script('rabbitloader-css-js', RabbitLoader_21_Core::getRLDomain() . 'account/common/js/report_css.js', ['rabbitloader-datatable-js'], RABBITLOADER_PLUG_VERSION);
+        wp_enqueue_script('rabbitloader-css-js', RabbitLoader_21_Core::getRLBaseDomain() . 'account/common/js/report_css.js', ['rabbitloader-datatable-js'], RABBITLOADER_PLUG_VERSION);
         wp_add_inline_script('rabbitloader-css-js', $tbl);
     }
 

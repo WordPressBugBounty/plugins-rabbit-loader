@@ -111,14 +111,13 @@ final class RabbitLoader_21_Tab_Home extends RabbitLoader_21_Tab_Init
 
             <?php } ?>
             <div class="row mb-4">
-                <div class="col-sm-12 col-md-4 text-center rl-col-same-height">
-                    <div class="bg-white rounded p-4" style=" height:100%;">
-                        <div class="score_circle" id="score_circle_best" data-percent="<?php echo $overview['score_circle_best']; ?>"></div>
-                        <span class="text-secondary d-block mt-2">Best PageSpeed Score</span>
+                <div class="col-sm-12 col-md-4 text-center">
+                    <div id="mfe_main_score" style="height:310px;">
+                        <div class="bg-white rounded p-4" style=" height:100%;">Loading Score...</div>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-8 rl-col-same-height">
-                    <div class="bg-white rounded p-4">
+                <div class="col-sm-12 col-md-8 ">
+                    <div class="bg-white rounded p-4" style="height: 310px;">
                         <?php self::avgScoreBox($overview); ?>
                     </div>
                 </div>
@@ -277,8 +276,8 @@ final class RabbitLoader_21_Tab_Home extends RabbitLoader_21_Tab_Init
         <div class="progress">
             <div class="progress-bar <?php echo $overview['pp_used'] < 80 ? ' rl-bg-primary  ' : ' bg-danger '; ?>" role="progressbar" aria-valuenow="<?php echo $overview['pp_used']; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $overview['pp_used']; ?>%"><?php echo $overview['pp_used']; ?>%</div>
         </div>
-        <p class="text-secondary"><?php RL21UtilWP::_e(sprintf('You have consumed %s (%s%%) out of %s Page-Views monthly quota available in your current plan.', $overview['pv_used'], round($overview['pp_used'], 2), $overview['pv_quota'])); ?> <a target="_blank" href="<?php echo self::getUpgradeLink('quota_remaining', $overview['plan_title']); ?>" class="rl-btn rl-btn-primary mt-1"><?php RL21UtilWP::_e('Upgrade'); ?></a></p>
-        <!--<p class="text-secondary"><?php RL21UtilWP::_e(sprintf("%d out of %d detected pages are optimized.", $overview['optimized_url_count'], $overview['canonical_url_count'])); ?> <a href="https://rabbitloader.com/kb/slow-warm-up-wordpress-website/" title="Troubleshooting slow warm-up" target="_blank">Troubleshoot page discovery</a></p> -->
+        <p class="text-secondary"><?php RL21UtilWP::_e(sprintf('You have consumed %s (%s%%) out of %s Page-Views monthly quota available in your current plan.', $overview['pv_used'], round($overview['pp_used'], 2), $overview['pv_quota'])); ?></p>
+        <a target="_blank" href="<?php echo self::getUpgradeLink('quota_remaining', $overview['plan_title']); ?>" class="rl-btn rl-btn-primary mt-1"><?php RL21UtilWP::_e('Upgrade'); ?></a>
 <?php
     }
 }
