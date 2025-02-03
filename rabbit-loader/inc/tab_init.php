@@ -77,7 +77,6 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
         $tabs = [
             'home' => 'Home',
             'urls' => 'URLs',
-            //'images'=>'Images',
             'css' => 'Critical CSS',
             'usage' => 'Usage',
             'settings' => 'Settings',

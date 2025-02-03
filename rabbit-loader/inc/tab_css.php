@@ -21,7 +21,7 @@ final class RabbitLoader_21_Tab_Css extends RabbitLoader_21_Tab_Init
 
         self::addDtDependencies();
 
-        wp_enqueue_script('rabbitloader-css-js', RabbitLoader_21_Core::getRLBaseDomain() . 'account/common/js/report_css.js', ['rabbitloader-datatable-js'], RABBITLOADER_PLUG_VERSION);
+        wp_enqueue_script('rabbitloader-css-js', RABBITLOADER_PLUG_URL . 'admin/js-legacy/report_css.js', ['rabbitloader-datatable-js'], RABBITLOADER_PLUG_VERSION);
         wp_add_inline_script('rabbitloader-css-js', $tbl);
     }
 

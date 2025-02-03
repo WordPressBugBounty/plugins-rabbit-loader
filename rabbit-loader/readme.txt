@@ -4,7 +4,7 @@ Contributors: sanrl, abhishekgr
 Tags: cache, caching, speed optimization, pagespeed insights, core web vitals
 Requires at least: 4.7
 Tested up to: 6.7.1
-Stable tag: 2.22.2
+Stable tag: 2.22.3
 Requires PHP: 5.6
 License: GNU General Public License, version 2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -217,6 +217,10 @@ Yes, you can use the RabbitLoader WordPress plugin even if you have Cloudflare o
 5. Integrated Content Delivery Network
 
 == Changelog ==
+
+= 2.22.3 =
+* Compatibility with MonsterInsights – Google Analytics Dashboard for WordPress plugin
+* Bugfix: forgot password page from being cached when WP Admin path is customized
 
 = 2.22.2 =
 * Bugfix: duplicate meta tag generation in some cases

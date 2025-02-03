@@ -52,10 +52,10 @@ class RL21UtilWP
     public static function is_login_page()
     {
         $is_login = function_exists('is_login') && function_exists('wp_login_url') && is_login();
-
+        $is_lostpass = !empty($_GET["action"]) && $_GET["action"] == 'lostpassword';
         $incl_path = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, ABSPATH);
 
-        return $is_login || (in_array($incl_path . 'wp-login.php', get_included_files())
+        return $is_login || $is_lostpass || (in_array($incl_path . 'wp-login.php', get_included_files())
             || in_array($incl_path . 'wp-register.php', get_included_files()))
             || (isset($_GLOBALS['pagenow']) && $GLOBALS['pagenow'] === 'wp-login.php')
             || $_SERVER['PHP_SELF'] == '/wp-login.php' || self::$isPageAccount;

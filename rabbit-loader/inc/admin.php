@@ -106,6 +106,12 @@ class RabbitLoader_21_Admin
         });
         add_action('plugins_loaded', 'RabbitLoader_AD_AD::on_plugins_loaded');
         //listeners for taxonomy changes
+
+        add_action('wp_print_scripts', function () {
+            if (RabbitLoader_21_Util_Core::isRLPage()) {
+                wp_dequeue_script('monsterinsights-vue-frontend'); //vue JS conflict with apexcharts window.SVG().addTo fails
+            }
+        }, 100);
     }
 
     public static function init() {}
@@ -222,9 +228,9 @@ class RabbitLoader_21_Admin
         echo '</p>';
         echo '<p class="p" style="margin-top: 1.5rem;"><button id="rl_show_survey" class="rl-btn rl-btn-primary mt-2 mb-sm-0">';
         RL21UtilWP::_e('Yes, Continue');
-        echo '</button> <a href="' . $remindLaterURL  . '" class="rl-btn" style="color:#6b71fb;">';
+        echo '</button> <a href="' . $remindLaterURL  . '" class="rl-btn" style="color:#0076CE;">';
         RL21UtilWP::_e('Ask me later');
-        echo '</a><a href="' . $remindNeverURL . '" class="rl-btn" style="color:#6b71fb;">';
+        echo '</a><a href="' . $remindNeverURL . '" class="rl-btn" style="color:#0076CE;">';
         RL21UtilWP::_e('I already did');
         echo '</a></p>';
         echo '</div>';

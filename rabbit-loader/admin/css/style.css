@@ -81,14 +81,14 @@ h4 {
 }
 
 .rl-btn-outline-primary {
-    color: #6b71fb;
-    border-color: #6b71fb;
+    color: #0076CE;
+    border-color: #0076CE;
 }
 
 .rl-btn-outline-primary:hover {
     color: #fff;
-    background-color: #6b71fb;
-    border-color: #6b71fb;
+    background-color: #0076CE;
+    border-color: #0076CE;
 }
 
 .rl-btn-lg {
@@ -100,7 +100,7 @@ h4 {
 
 .rl-bg-primary {
     color: #fff;
-    background-color: #6b71fb !important;
+    background-color: #0076CE !important;
 }
 
 .btn.focus,
@@ -410,11 +410,11 @@ table.dataTable.no-footer {
 }
 
 input:checked+.rl-switch-slider {
-    background-color: #6b71fb;
+    background-color: #0076CE;
 }
 
 input:focus+.rl-switch-slider {
-    box-shadow: 0 0 1px #6b71fb;
+    box-shadow: 0 0 1px #0076CE;
 }
 
 input:checked+.rl-switch-slider:before {
