@@ -309,7 +309,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
 
     protected static function getUpgradeLink($utm_term, $plan_title)
     {
-        return esc_url(RabbitLoader_21_Core::getRLBaseDomain() . "pricing/?utm_source=wordpress&utm_medium=plugin&utm_term=$utm_term&utm_content=$utm_term#domain=" . urlencode(get_home_url()) . "/");
+        return esc_url(RabbitLoader_21_Core::getRLBaseDomain() . "account/?utm_source=wordpress&utm_medium=plugin&utm_term=$utm_term&utm_content=$utm_term&action=upgrade&domain_id=" . RabbitLoader_21_Core::getWpOptVal('did') . '&domain_name=' . urlencode(get_home_url()) . "/");
     }
 
     private static function check_varnish($attempts)
