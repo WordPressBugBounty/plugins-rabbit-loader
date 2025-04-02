@@ -4,7 +4,7 @@ Contributors: sanrl, abhishekgr
 Tags: cache, caching, speed optimization, pagespeed insights, core web vitals
 Requires at least: 4.7
 Tested up to: 6.7.1
-Stable tag: 2.22.4
+Stable tag: 2.22.5
 Requires PHP: 5.6
 License: GNU General Public License, version 2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -217,6 +217,9 @@ Yes, you can use the RabbitLoader WordPress plugin even if you have Cloudflare o
 5. Integrated Content Delivery Network
 
 == Changelog ==
+
+= 2.22.5 =
+* Fix loading issue of Crash Courses under Help tab
 
 = 2.22.4 =
 * Performance improvements
