@@ -111,9 +111,14 @@ final class RabbitLoader_21_Tab_Home extends RabbitLoader_21_Tab_Init
 
             <?php } ?>
             <div class="row mb-4">
+                <div class="col-sm-12" id="mfe_perf_cards" style="min-height:120px">
+                    <div class="bg-white rounded p-4" style=" height:100%;">Loading...</div>
+                </div>
+            </div>
+            <div class="row mb-4">
                 <div class="col-sm-12 col-md-4 text-center">
                     <div id="mfe_main_score" style="height:350px;">
-                        <div class="bg-white rounded p-4" style=" height:100%;">Loading Score...</div>
+                        <div class="bg-white rounded p-4" style=" height:100%;">Loading...</div>
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-8 ">
@@ -154,26 +159,6 @@ final class RabbitLoader_21_Tab_Home extends RabbitLoader_21_Tab_Init
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row mb-4">
-                <div class="col-sm-12 col-md-6">
-                    <?php self::urls_detected_box($overview, true); ?>
-                </div>
-                <!-- <div class="col-sm-12 col-md-4">
-                    <?php //self::optimization_image_home($overview, true);
-                    ?>
-                </div> -->
-                <div class="col-sm-12 col-md-6">
-                    <?php self::optimization_css_home($overview, true); ?>
-                </div>
-                <!-- <div class="col-sm-12 col-md-4">
-                    <?php //self::quota_used_box($overview, true);
-                    ?>
-                </div> -->
-                <!-- <div class="col-sm-12 col-md-4">
-                    <?php //self::quota_remaining_box($overview);
-                    ?>
-                </div> -->
             </div>
             <?php
             if ($overview['pp_used'] >= 100) { ?>

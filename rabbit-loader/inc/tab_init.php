@@ -43,12 +43,6 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
                     } else if ($tab == 'usage') {
                         RabbitLoader_21_Tab_Usage::init();
                         RabbitLoader_21_Tab_Usage::echoMainContent();
-                        // } else if ($tab == 'images') {
-                        //     RabbitLoader_21_Tab_Images::init();
-                        //     RabbitLoader_21_Tab_Images::echoMainContent();
-                    } else if ($tab == 'css') {
-                        RabbitLoader_21_Tab_Css::init();
-                        RabbitLoader_21_Tab_Css::echoMainContent();
                     } else {
                         //anything not defined will show the home tab
                         RabbitLoader_21_Tab_Home::init();
@@ -77,7 +71,6 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
         $tabs = [
             'home' => 'Home',
             'urls' => 'URLs',
-            'css' => 'Critical CSS',
             'usage' => 'Usage',
             'settings' => 'Settings',
             'exclusions' => 'Exclusions',

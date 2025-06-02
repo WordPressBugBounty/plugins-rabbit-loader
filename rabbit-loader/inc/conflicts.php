@@ -263,7 +263,12 @@ class RabbitLoader_21_Conflicts
                 } else {
                     $themeName = 'current';
                 }
-                $fb_options = get_option('fusion_options');
+                $option_name = 'fusion_options';
+                if (is_callable('Avada::get_option_name')) {
+                    $option_name = Avada::get_option_name(); //fusion_options_et 
+                }
+                $fb_options = get_option($option_name);
+
                 $empty_checks = [
                     'lazy_load' => ['none', 'off'],
                     'js_compiler' => ['0'],
@@ -280,7 +285,8 @@ class RabbitLoader_21_Conflicts
                     } else if (in_array($fb_options[$key], $expValues)) {
                         continue;
                     } else {
-                        self::$messages[] = sprintf(RL21UtilWP::__("Please disable %s to avoid conflict with RabbitLoader. For help, refer <a href='%s' target='_blank'>this guide</a>."), " all performance options in $themeName theme performance settings such as \"" . str_ireplace("_", " ", $key), "\" https://rabbitloader.com/kb/settings-required-for-themefusion-users/");
+                        //self::$messages[] = $option_name . "=" . $key . "=" . $fb_options[$key];
+                        self::$messages[] = sprintf(RL21UtilWP::__("Please disable %s to avoid conflict with RabbitLoader. For help, refer <a href='%s' target='_blank'>this guide</a>."), " all performance options in $themeName theme performance settings such as \"" . str_ireplace("_", " ", $key) . "\"", "https://rabbitloader.com/kb/settings-required-for-themefusion-users/");
                         break;
                     }
                 }
