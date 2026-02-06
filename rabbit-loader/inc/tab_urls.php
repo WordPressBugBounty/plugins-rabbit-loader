@@ -30,13 +30,13 @@ class RabbitLoader_21_Tab_Urls extends RabbitLoader_21_Tab_Init
                     <?php self::urls_detected_box($overview, false); ?>
                 </div>
                 <div class="col-sm-12 col-md-4">
-                    <div class="bg-white rounded p-4">
+                    <div class="rl-mfe-card">
                         <h4 class="" title=""><?php echo $overview['score_circle_best']; ?>/<small style="font-size:14px;">100</small></h4>
                         <span class="text-secondary mt-2"><?php RL21UtilWP::_e('Best SpeedScore So Far'); ?></span>
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-4">
-                    <div class="bg-white rounded p-4">
+                    <div class="rl-mfe-card">
                         <h4 class="" title=""><?php echo $overview['score_circle_avg']; ?>/<small style="font-size:14px;">100</small></h4>
                         <span class="text-secondary mt-2"><?php RL21UtilWP::_e('Avg SpeedScore Achieved'); ?></span>
                     </div>

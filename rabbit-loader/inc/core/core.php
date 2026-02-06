@@ -547,10 +547,6 @@ class RabbitLoader_21_Core
                 RabbitLoader_21_TP::purge_url($url, $tp_purge_count);
             });
 
-            $rlSDK->registerUnauthorizedCallback(function ($httpCode) {
-                RabbitLoader_21_Core::update_api_tokens('', '', '', $httpCode . ' when SDK was called');
-            });
-
             $platform = [
                 'plugin_cms' => 'wp',
                 'plugin_v' => RL21UtilWP::getRLPlugVersion(),

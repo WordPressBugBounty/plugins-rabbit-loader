@@ -304,10 +304,69 @@ class RL21UtilWP
         }
     }
 
+    private static function verifyToken()
+    {
+        error_log("RabbitLoader: Verifying token...");
+        $did = RabbitLoader_21_Core::getWpOptVal('did');
+        if (empty($did)) {
+            error_log("RabbitLoader: Domain ID (did) not found in options.");
+            wp_send_json_error(['message' => 'Domain ID not configured'], 403);
+            return;
+        }
+
+        $base_url = "https://api-v2.rabbitloader.com";
+        $ssl_verify = true;
+        if (strpos(home_url(), 'wpunittest.com') !== false) {
+            $base_url = "https://api-v2.rabbitloader.local";
+            $ssl_verify = false;
+        }
+
+        $url = $base_url . "/domain/verify/" . $did;
+        error_log("RabbitLoader: Verification URL: " . $url);
+
+        $response = wp_remote_post($url, [
+            'sslverify' => $ssl_verify,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $_POST['token']
+            ],
+            'body' => [
+                'url' => home_url()
+            ]
+        ]);
+
+        if (is_wp_error($response)) {
+            error_log("RabbitLoader: Token verification failed with WP Error: " . $response->get_error_message());
+            print_r($response);
+            wp_send_json_error(null, 403);
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+        error_log("RabbitLoader: Token verification response code: " . $code);
+
+        if ($code === 200) {
+            error_log("RabbitLoader: Token verified successfully.");
+            return;
+        }
+
+        $body = wp_remote_retrieve_body($response);
+        error_log("RabbitLoader: Token verification unsuccessful. Body: " . $body);
+        wp_send_json_error(null, 403);
+    }
+
     public static function verifyAjaxNonce()
     {
+        error_log("RabbitLoader: verifyAjaxNonce called.");
         if (empty($_POST['rl_nonce']) || !wp_verify_nonce($_POST['rl_nonce'], 'rl-ajax-nonce')) {
-            wp_send_json_error(null, 403);
+            error_log("RabbitLoader: Nonce verification failed or missing.");
+            if (empty($_POST['token'])) {
+                error_log("RabbitLoader: No token provided. Access denied.");
+                wp_send_json_error(null, 403);
+            } else {
+                error_log("RabbitLoader: Token provided. Proceeding to verify token.");
+                self::verifyToken();
+            }
+        } else {
+            error_log("RabbitLoader: Nonce verified successfully.");
         }
     }
 }

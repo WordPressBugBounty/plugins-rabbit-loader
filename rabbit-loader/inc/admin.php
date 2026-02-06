@@ -21,8 +21,8 @@ class RabbitLoader_21_Admin
         add_action('admin_enqueue_scripts', function () {
             $dependencies = ['jquery'];
             if (RabbitLoader_21_Util_Core::isRLPage()) {
-                wp_enqueue_script('rabbitloader-react', 'https://unpkg.com/react@18/umd/react.production.min.js', [], false);
-                wp_enqueue_script('rabbitloader-react-dom', 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js', [], false);
+                wp_enqueue_script('rabbitloader-react', 'no', [], false);
+                wp_enqueue_script('rabbitloader-react-dom', 'no', [], false);
                 $dependencies[] = 'rabbitloader-react';
                 $dependencies[] = 'rabbitloader-react-dom';
             }
@@ -37,7 +37,7 @@ class RabbitLoader_21_Admin
             wp_add_inline_script('rabbitloader-index', 'RLAdmin.Init(window, ' . json_encode($localVars) . ');');
         });
 
-        add_action('wp_ajax_rabbitloader_ajax_purge', function () {
+        $purge_func = function () {
             RL21UtilWP::verifyAjaxNonce();
             $response = [
                 'result' => false,
@@ -54,7 +54,10 @@ class RabbitLoader_21_Admin
             RL21UtilWP::execute_purge($response['lpc']);
             delete_transient('rabbitloader_trans_overview_data');
             RabbitLoader_21_Core::sendJsonResponse($response);
-        });
+        };
+
+        add_action('wp_ajax_rabbitloader_ajax_purge', $purge_func);
+        add_action('wp_ajax_nopriv_rabbitloader_ajax_purge', $purge_func);
 
         add_action('wp_ajax_rabbitloader_mode_change', function () {
             RL21UtilWP::verifyAjaxNonce();

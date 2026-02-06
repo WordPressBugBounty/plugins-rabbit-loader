@@ -67,7 +67,7 @@ class RabbitLoader_21_Tab_Exclusions extends RabbitLoader_21_Tab_Init
     ?>
         <div class="row mb-4">
             <div class="col">
-                <div class="bg-white rounded p-4">
+                <div class="rl-mfe-card">
                     <div class="row">
                         <div class="col-sm-12 col-md-8 text-secondary">
                             <h5 class="mt-0">Exclude URLs</h5>
@@ -75,7 +75,7 @@ class RabbitLoader_21_Tab_Exclusions extends RabbitLoader_21_Tab_Init
                             <div class="mt-4">
                                 <form method="post">
                                     <textarea class="form-control" rows="5" placeholder="e.g. /path/* without domain name" name="exclude_patterns"><?php echo $exclude_patterns; ?></textarea>
-                                    <button type="submit" class="rl-btn rl-btn-primary mt-2">Save</button>
+                                    <button type="submit" class="rl-mfe-btn mt-2">Save</button>
                                 </form>
                                 <?php
                                 self::saveNotice();
@@ -123,7 +123,7 @@ class RabbitLoader_21_Tab_Exclusions extends RabbitLoader_21_Tab_Init
     ?>
         <div class="row mb-4">
             <div class="col">
-                <div class="bg-white rounded p-4">
+                <div class="rl-mfe-card">
                     <div class="row">
                         <div class="col-sm-12 col-md-8 text-secondary">
                             <h5 class="mt-0">Ignore Parameters</h5>
@@ -131,7 +131,7 @@ class RabbitLoader_21_Tab_Exclusions extends RabbitLoader_21_Tab_Init
                             <div class="mt-4">
                                 <form method="post">
                                     <textarea class="form-control" rows="5" placeholder="e.g. fbclid" name="ignore_params"><?php echo $ignore_params; ?></textarea>
-                                    <button type="submit" class="rl-btn rl-btn-primary mt-2">Save</button>
+                                    <button type="submit" class="rl-mfe-btn mt-2">Save</button>
                                 </form>
                                 <?php
                                 self::saveNotice();

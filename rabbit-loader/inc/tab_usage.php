@@ -34,7 +34,7 @@ final class RabbitLoader_21_Tab_Usage extends RabbitLoader_21_Tab_Init
                     <?php self::quota_remaining_box($overview); ?>
                 </div>
                 <div class="col-sm-12 col-md-4">
-                    <div class="bg-white rounded p-4 tpopup" title="<?php RL21UtilWP::_e(sprintf('Your usage cycle will be reset on %s',  date('jS M, Y', strtotime($overview['plan_end_date'])))); ?>">
+                    <div class="rl-mfe-card tpopup d-flex justify-content-between flex-column h-100" title="<?php RL21UtilWP::_e(sprintf('Your usage cycle will be reset on %s',  date('jS M, Y', strtotime($overview['plan_end_date'])))); ?>">
                         <h4 class="">
                             <?php echo date('jS', strtotime($overview['plan_end_date'])); ?> <small style="font-size:14px;"><?php echo date('M', strtotime($overview['plan_end_date'])); ?></small>
                         </h4>

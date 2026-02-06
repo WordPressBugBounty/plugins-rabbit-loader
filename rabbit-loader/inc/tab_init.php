@@ -25,6 +25,8 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
 
                     self::echoTabBar($tab);
 
+                    echo '<div id="mfe_rl-chat"></div>';
+
                     if ($tab == 'exclusions') {
                         RabbitLoader_21_Tab_Exclusions::init();
                         RabbitLoader_21_Tab_Exclusions::echoMainContent();
@@ -43,6 +45,12 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
                     } else if ($tab == 'usage') {
                         RabbitLoader_21_Tab_Usage::init();
                         RabbitLoader_21_Tab_Usage::echoMainContent();
+                        // } else if ($tab == 'images') {
+                        //     RabbitLoader_21_Tab_Images::init();
+                        //     RabbitLoader_21_Tab_Images::echoMainContent();
+                    } else if ($tab == 'css') {
+                        RabbitLoader_21_Tab_Css::init();
+                        RabbitLoader_21_Tab_Css::echoMainContent();
                     } else {
                         //anything not defined will show the home tab
                         RabbitLoader_21_Tab_Home::init();
@@ -71,6 +79,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
         $tabs = [
             'home' => 'Home',
             'urls' => 'URLs',
+            'css' => 'Critical CSS',
             'usage' => 'Usage',
             'settings' => 'Settings',
             'exclusions' => 'Exclusions',
@@ -223,7 +232,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
     protected static function quota_used_box(&$overview, $show_arrow)
     {
     ?>
-        <div class="bg-white rounded p-4" title="<?php RL21UtilWP::_e(sprintf('You have consumed %s page-views out of %s page-views monthly quota available in your current plan.', intval($overview['pv_used']), $overview['pv_quota'])); ?>">
+        <div class="rl-mfe-card h-100 d-flex flex-column justify-content-between" title="<?php RL21UtilWP::_e(sprintf('You have consumed %s page-views out of %s page-views monthly quota available in your current plan.', intval($overview['pv_used']), $overview['pv_quota'])); ?>">
             <h4 class="<?php echo $overview['pp_used'] >= 99 ? "text-danger" : ""; ?>">
                 <?php echo intval($overview['pv_used']); ?>/<small style="font-size:14px;"><?php echo $overview['pv_quota']; ?> </small>
             </h4>
@@ -240,7 +249,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
     {
         $gb_remaining_nz = $overview['pv_remaining'] < 0 ? 0 : intval($overview['pv_remaining']);
     ?>
-        <div class="bg-white rounded p-4" title="<?php RL21UtilWP::_e(sprintf('You have %s page-views available out of %s page-views monthly quota in the current billing cycle.', $gb_remaining_nz, $overview['pv_quota'])); ?>">
+        <div class="rl-mfe-card" title="<?php RL21UtilWP::_e(sprintf('You have %s page-views available out of %s page-views monthly quota in the current billing cycle.', $gb_remaining_nz, $overview['pv_quota'])); ?>">
             <h4 class="<?php echo $overview['pp_used'] >= 99 ? "text-danger" : ""; ?>"><?php echo $gb_remaining_nz; ?>/<small style="font-size:14px;"><?php echo $overview['pv_quota']; ?> </small></h4>
             <span class="text-secondary mt-2"><?php RL21UtilWP::_e('PageViews Remaining'); ?></span> <a target="_blank" href="<?php echo self::getUpgradeLink('quota_remaining', $overview['plan_title']); ?>" class="badge rl-bg-primary text-white" style="text-decoration: none;"><?php RL21UtilWP::_e('GET MORE'); ?></a>
         </div>
@@ -251,7 +260,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
     {
         $title = RL21UtilWP::__(sprintf('Optimized cache exists for %d hot URL(s) out of total %d URL(s) detected',  $overview['optimized_url_count'], $overview['canonical_url_count']));
     ?>
-        <div class="bg-white rounded p-4 tpopup" title="<?php echo $title; ?>">
+        <div class="rl-mfe-card tpopup" title="<?php echo $title; ?>">
             <h4 class=""><?php echo $overview['optimized_url_count']; ?>/<small style="font-size:14px;"><?php echo $overview['canonical_url_count']; ?></small></h4>
             <a class="rl-dash-link" href="<?php echo self::getTabUrl('urls'); ?>">
                 <span class="text-secondary mt-2"><?php RL21UtilWP::_e('Hot URLs Cache'); ?>
@@ -281,7 +290,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
     protected static function optimization_css_home(&$overview, $show_arrow)
     {
     ?>
-        <div class="bg-white rounded p-4 tpopup" title="<?php RL21UtilWP::_e(sprintf('%s%% reduction in CSS is achieved in form of Critical CSS that is required for initial page rendering.', round($overview['css_size_pp'], 2))); ?>">
+        <div class="rl-mfe-card tpopup" title="<?php RL21UtilWP::_e(sprintf('%s%% reduction in CSS is achieved in form of Critical CSS that is required for initial page rendering.', round($overview['css_size_pp'], 2))); ?>">
             <h4 class="">
                 <?php echo round($overview['css_size_pp'], 2); ?><small style="font-size:14px;">%</small>
             </h4>

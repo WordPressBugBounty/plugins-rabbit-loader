@@ -110,31 +110,33 @@ final class RabbitLoader_21_Tab_Home extends RabbitLoader_21_Tab_Init
                 </div>
 
             <?php } ?>
-            <div class="row mb-4">
-                <div class="col-sm-12" id="mfe_perf_cards" style="min-height:120px">
-                    <div class="bg-white rounded p-4" style=" height:100%;">Loading...</div>
+            <div class="mb-4 row">
+                <div id="mfe_perf_cards">
+                    <div class="w-100 rl-mfe-card">
+                        Loading...
+                    </div>
                 </div>
             </div>
             <div class="row mb-4">
                 <div class="col-sm-12 col-md-4 text-center">
                     <div id="mfe_main_score" style="height:350px;">
-                        <div class="bg-white rounded p-4" style=" height:100%;">Loading...</div>
+                        <div class="rl-mfe-card" style=" height:100%;">Loading Score...</div>
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-8 ">
-                    <div class="bg-white rounded p-4" style="height: 350px;">
+                    <div class="rl-mfe-card" style="height: 350px;">
                         <?php self::avgScoreBox($overview); ?>
                     </div>
                 </div>
             </div>
             <div class="row mb-4">
                 <div class="col-sm-12 col-md-4 text-center rl-col-same-height">
-                    <div class="bg-white rounded p-4 d-flex align-items-center justify-content-center" style="height:100%;">
-                        <a href="https://rabbitloader.com/account/" target="_blank" class="rl-btn rl-btn-primary">View Reports <span class="dashicons dashicons-external mt-1"></span></a>
+                    <div class="rl-mfe-card d-flex align-items-center justify-content-center" style="height:100%;">
+                        <a href="https://rabbitloader.com/account/" target="_blank" class="rl-mfe-btn">View Reports <span class="dashicons dashicons-external mt-1"></span></a>
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-8 rl-col-same-height">
-                    <div class="bg-white rounded p-4">
+                    <div class="rl-mfe-card">
                         <div class="row">
                             <div class="col-12 text-center">
                                 <h5 class="mt-2 mb-4"><?php RL21UtilWP::_e('Not ready for the world yet?'); ?></h5>
@@ -159,6 +161,26 @@ final class RabbitLoader_21_Tab_Home extends RabbitLoader_21_Tab_Init
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-sm-12 col-md-6">
+                    <?php self::urls_detected_box($overview, true); ?>
+                </div>
+                <!-- <div class="col-sm-12 col-md-4">
+                    <?php //self::optimization_image_home($overview, true);
+                    ?>
+                </div> -->
+                <div class="col-sm-12 col-md-6">
+                    <?php self::optimization_css_home($overview, true); ?>
+                </div>
+                <!-- <div class="col-sm-12 col-md-4">
+                    <?php //self::quota_used_box($overview, true);
+                    ?>
+                </div> -->
+                <!-- <div class="col-sm-12 col-md-4">
+                    <?php //self::quota_remaining_box($overview);
+                    ?>
+                </div> -->
             </div>
             <?php
             if ($overview['pp_used'] >= 100) { ?>
@@ -186,16 +208,16 @@ final class RabbitLoader_21_Tab_Home extends RabbitLoader_21_Tab_Init
             <?php } ?>
             <div class="row mb-4">
                 <div class="col">
-                    <div class="bg-white rounded p-4">
+                    <div class="rl-mfe-card">
                         <div class="row">
                             <div class="col-sm-12 col-md-8 px-4 text-secondary">
                                 <h5 class="mt-2 mb-4"><?php RL21UtilWP::_e('Clear All Cache'); ?></h5>
                                 <span><?php RL21UtilWP::_e('Site content are cached at various CDN locations to improve page load times, and increasing global availability of content. When you place a purge request, contents from all CDN locations are discarded making a few pages load slower till the cache is rebuild. RabbitLoader plugin <b>automatically detects the modified pages and rebuilds cache</b> for them.'); ?></span>
                                 <primer data-video-id="QGAuLgOjCu0" data-duration="83"></primer>
                                 <div class="mt-5">
-                                    <a class="rl-btn rl-btn-primary mb-1 mb-sm-0" href="#" id="rabbitloader_purge_all"><?php RL21UtilWP::_e('Purge All Pages'); ?></a>
+                                    <a class="rl-mfe-btn mb-1 mb-sm-0" href="#" id="rabbitloader_purge_all"><?php RL21UtilWP::_e('Purge All Pages'); ?></a>
 
-                                    <a class="rl-btn rl-btn-outline-primary" href="https://rabbitloader.com/kb/purging-cache-wordpress-plugin/" title="Purge a single page" target="_blank"><?php RL21UtilWP::_e('Purge a Single Page'); ?></a>
+                                    <a class="rl-mfe-btn--soft" href="https://rabbitloader.com/kb/purging-cache-wordpress-plugin/" title="Purge a single page" target="_blank"><?php RL21UtilWP::_e('Purge a Single Page'); ?></a>
 
                                 </div>
 
@@ -216,7 +238,7 @@ final class RabbitLoader_21_Tab_Home extends RabbitLoader_21_Tab_Init
             </div>
             <div class="row mb-4">
                 <div class="col">
-                    <div class="bg-white rounded p-4">
+                    <div class="rl-mfe-card">
                         <div class="row">
                             <div class="col-lg-4 col-md-12 text-center">
                                 <img src="<?php echo RABBITLOADER_PLUG_URL; ?>/assets/help.jpg" class="img-fluid" />
@@ -251,18 +273,24 @@ final class RabbitLoader_21_Tab_Home extends RabbitLoader_21_Tab_Init
     private static function avgScoreBox(&$overview)
     {
     ?>
-        <h5 class="mt-3">Average Score</h5>
-        <div class="progress">
-            <div class="progress-bar rl-bg-primary " role="progressbar" aria-valuenow="<?php echo $overview['score_circle_avg']; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $overview['score_circle_avg']; ?>%"><?php echo $overview['score_circle_avg']; ?> / 100</div>
-        </div>
-        <p class="text-secondary"><?php echo $overview['score_circle_avg']; ?> out of 100, calculated based on all discovered pages, including un-optimized pages.</p>
+            <div class="d-flex flex-column justify-content-between h-100">
+                <div>
+                    <h5 class="mt-3">Average Score</h5>
+                    <div class="progress">
+                        <div class="progress-bar rl-bg-primary " role="progressbar" aria-valuenow="<?php echo $overview['score_circle_avg']; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $overview['score_circle_avg']; ?>%"><?php echo $overview['score_circle_avg']; ?> / 100</div>
+                    </div>
+                    <p class="text-secondary"><?php echo $overview['score_circle_avg']; ?> out of 100, calculated based on all discovered pages, including un-optimized pages.</p>
 
-        <h5 class="mt-4">Quota Usage (<?php echo $overview['plan_title']; ?> Plan)</h5>
-        <div class="progress">
-            <div class="progress-bar <?php echo $overview['pp_used'] < 80 ? ' rl-bg-primary  ' : ' bg-danger '; ?>" role="progressbar" aria-valuenow="<?php echo $overview['pp_used']; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $overview['pp_used']; ?>%"><?php echo $overview['pp_used']; ?>%</div>
-        </div>
-        <p class="text-secondary"><?php RL21UtilWP::_e(sprintf('You have consumed %s (%s%%) out of %s Page-Views monthly quota available in your current plan.', $overview['pv_used'], round($overview['pp_used'], 2), $overview['pv_quota'])); ?></p>
-        <a target="_blank" href="<?php echo self::getUpgradeLink('quota_remaining', $overview['plan_title']); ?>" class="rl-btn rl-btn-primary mt-1"><?php RL21UtilWP::_e('Upgrade'); ?></a>
+                    <h5 class="mt-4">Quota Usage (<?php echo $overview['plan_title']; ?> Plan)</h5>
+                    <div class="progress">
+                        <div class="progress-bar <?php echo $overview['pp_used'] < 80 ? ' rl-bg-primary  ' : ' bg-danger '; ?>" role="progressbar" aria-valuenow="<?php echo $overview['pp_used']; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $overview['pp_used']; ?>%"><?php echo $overview['pp_used']; ?>%</div>
+                    </div>
+                    <p class="text-secondary"><?php RL21UtilWP::_e(sprintf('You have consumed %s (%s%%) out of %s Page-Views monthly quota available in your current plan.', $overview['pv_used'], round($overview['pp_used'], 2), $overview['pv_quota'])); ?></p>
+                </div>
+                <div class="mb-2">
+                    <a target="_blank" href="<?php echo self::getUpgradeLink('quota_remaining', $overview['plan_title']); ?>" class="rl-mfe-btn"><?php RL21UtilWP::_e('Upgrade'); ?></a>
+                </div>
+            </div>
 <?php
     }
 }

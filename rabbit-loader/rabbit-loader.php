@@ -6,7 +6,7 @@
  * Author:       RabbitLoader
  * Author URI:   https://rabbitloader.com/
  * Description: RabbitLoader can improve Google PageSpeed score and get you 100 out of 100 by improving the page load time to just a few milliseconds. It improves the Core Web Vitals score for your pages and boost PageSpeed score to help better search rankings and best the experience for your end user.
- * Version: 2.23.0
+ * Version: 2.24.5
  * Text Domain: rabbit-loader
  */
 /*
@@ -77,6 +77,41 @@ add_action('woocommerce_product_object_updated_props', function ($product, $upda
 register_shutdown_function(function () {
     RL21UtilWP::execute_purge($count);
 });
+
+register_activation_hook(__FILE__, function () {
+    add_option('rabbitloader_do_activation_redirect', true);
+});
+
+add_action('admin_enqueue_scripts', function() {
+    if ( isset($_GET['page']) && $_GET['page'] === 'rabbitloader' ) {
+        wp_dequeue_script('wp-commands');
+        wp_dequeue_script('wp-core-commands');
+    }
+}, 100);
+
+
+add_action('admin_init', 'rabbitloader_activation_redirect');
+
+function rabbitloader_activation_redirect() {
+    // Only redirect if our flag is set
+    if (!get_option('rabbitloader_do_activation_redirect')) {
+        return;
+    }
+
+    // Delete the flag so it happens only once
+    delete_option('rabbitloader_do_activation_redirect');
+
+    // Prevent redirect on bulk activation
+    if (isset($_GET['activate-multi'])) {
+        return;
+    }
+
+    // Redirect to your plugin page
+    wp_safe_redirect(
+        admin_url('admin.php?page=rabbitloader')
+    );
+    exit;
+}
 
 if (is_admin()) {
 

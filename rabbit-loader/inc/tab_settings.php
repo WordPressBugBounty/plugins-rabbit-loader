@@ -119,7 +119,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
     ?>
         <div class="row mb-4">
             <div class="col">
-                <div class="bg-white rounded p-4">
+                <div class="rl-mfe-card">
                     <div class="row">
 
                         <div class="col-8 text-secondary">
@@ -156,7 +156,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
     ?>
         <div class="row mb-4">
             <div class="col">
-                <div class="bg-white rounded p-4">
+                <div class="rl-mfe-card">
                     <div class="row">
                         <div class="col-sm-12 col-md-12 text-secondary">
                             <h5 class="mt-0">General Settings</h5>
@@ -194,7 +194,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
                                         ?>
                                     </div>
 
-                                    <button type="submit" class="rl-btn rl-btn-primary mt-2">Save</button>
+                                    <button type="submit" class="rl-mfe-btn mt-2">Save</button>
                                     <?php
                                     self::saveNotice();
                                     ?>
@@ -245,7 +245,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
 
                 echo '
             <div class="col text-center">
-                <div class="bg-white rounded p-2">
+                <div class="rl-mfe-card">
                     <a class="btn btn-link" ' . $link . '>' . $item['label'] . $icon . ' </a>
                     <primer data-video-id="' . $item['videoID'] . '" data-duration="' . $item['duration'] . '"></primer>
                 </div>

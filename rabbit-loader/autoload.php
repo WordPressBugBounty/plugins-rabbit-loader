@@ -3,7 +3,7 @@
 define('RABBITLOADER_PLUG_DIR', plugin_dir_path(__FILE__));
 define('RABBITLOADER_CACHE_DIR', WP_CONTENT_DIR . DIRECTORY_SEPARATOR . "rabbitloader");
 define('RABBITLOADER_PLUG_URL', plugin_dir_url(__FILE__));
-define('RABBITLOADER_PLUG_VERSION', '2.23.0');
+define('RABBITLOADER_PLUG_VERSION', '2.24.5');
 define('RABBITLOADER_TEXT_DOMAIN', 'rabbit-loader');
 define('RABBITLOADER_PLUG_ENV', 'PROD');
 if (!defined('JSON_INVALID_UTF8_IGNORE')) {
@@ -28,6 +28,7 @@ if (is_admin()) {
     include_once(RABBITLOADER_PLUG_DIR . 'inc/tab_settings.php');
     include_once(RABBITLOADER_PLUG_DIR . 'inc/tab_exclusions.php');
     include_once(RABBITLOADER_PLUG_DIR . 'inc/tab_log.php');
+    include_once(RABBITLOADER_PLUG_DIR . 'inc/tab_css.php');
 }
 
 RabbitLoader_21_Public::addActions();

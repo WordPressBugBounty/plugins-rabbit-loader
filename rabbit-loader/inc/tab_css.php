@@ -50,7 +50,7 @@ final class RabbitLoader_21_Tab_Css extends RabbitLoader_21_Tab_Init
 
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="bg-white rounded p-4">
+                    <div class="rl-mfe-card">
                         <div class="row">
                             <div class="text-center col border-right">
                                 <h4 class="" id="rl_lt_or">0 sec</h4>
@@ -67,7 +67,7 @@ final class RabbitLoader_21_Tab_Css extends RabbitLoader_21_Tab_Init
 
             <div class="row mb-4">
                 <div class="col">
-                    <div class="bg-white rounded py-4">
+                    <div class="rl-mfe-card">
                         <div class="row">
                             <div class="col-12 text-secondary">
                                 <h5 class="px-4">Critical CSS Details</h5>
@@ -89,7 +89,7 @@ final class RabbitLoader_21_Tab_Css extends RabbitLoader_21_Tab_Init
     {
         $html = '
         <div class="col">
-            <div class="bg-white rounded p-4">
+            <div class="rl-mfe-card">
                 <h4 class="" id="' . $id . '">' . $val . '</h4>
                 <span class="text-secondary mt-2">' . RL21UtilWP::__($lbl) . '</span>
             </div>

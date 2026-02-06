@@ -25,7 +25,7 @@ class RabbitLoader_21_Tab_Help
         <div class="" style="max-width: 1160px; margin:40px auto;">
             <div class="row mb-4">
                 <div class="col">
-                    <div class="bg-white rounded p-4">
+                    <div class="rl-mfe-card">
                         <div class="row">
 
                             <div class="col-sm-12 col-md-8 text-secondary">
@@ -33,8 +33,8 @@ class RabbitLoader_21_Tab_Help
                                 <span><?php RL21UtilWP::_e('Facing issue with RabbitLoader plugin? Browse our knowledge base for common issues or reach out to our support team at support@rabbitloader.com'); ?></span>
 
                                 <div class="mt-5">
-                                    <a target="_blank" class="rl-btn rl-btn-primary mb-1 mb-sm-0" href="https://rabbitloader.com/kb/"><?php RL21UtilWP::_e('Browse Knowledge Base'); ?></a>
-                                    <a target="_blank" class="rl-btn rl-btn-outline-primary" href="mailto:support@rabbitloader.com"><?php RL21UtilWP::_e('Contact Support'); ?></a>
+                                    <a target="_blank" class="rl-mfe-btn mb-1 mb-sm-0" href="https://rabbitloader.com/kb/"><?php RL21UtilWP::_e('Browse Knowledge Base'); ?></a>
+                                    <a target="_blank" class="rl-mfe-btn--soft" href="mailto:support@rabbitloader.com"><?php RL21UtilWP::_e('Contact Support'); ?></a>
                                 </div>
 
                             </div>
@@ -137,7 +137,7 @@ class RabbitLoader_21_Tab_Help
         echo '
         <div class="row mb-4">
             <div class="col">
-                <div class="bg-white rounded p-4">
+                <div class="rl-mfe-card">
                     <div class="row">
                         <div class="col-sm-12 col-md-8 text-secondary">
                             <h5 class="mb-3">', RL21UtilWP::_e($cat_name), '</h5>
