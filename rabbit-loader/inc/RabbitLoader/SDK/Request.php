@@ -85,17 +85,72 @@ class Request
         $uriRaw = substr($this->requestURI, 0, 4096);
         $uriDecoded = substr(rawurldecode($this->requestURI), 0, 4096);
 
+        // PHP 8 throws ValueError when fnmatch() receives a null byte.
+        if (strpos($uriRaw, "\0") !== false || strpos($uriDecoded, "\0") !== false) {
+            $this->ignoreRequest('malformed-uri');
+            return;
+        }
+
         foreach ($patterns as $path_pattern) {
             if (empty($path_pattern)) {
                 continue;
             }
 
             $path_pattern = trim($path_pattern);
-            if (fnmatch($path_pattern, $uriRaw) || fnmatch($path_pattern, $uriDecoded)) {
-                $this->ignoreRequest("skip-path-$path_pattern");
-                break;
+            if ($path_pattern === '' || strpos($path_pattern, "\0") !== false) {
+                continue;
+            }
+
+            $patterns_to_match = [$path_pattern];
+            if (!$this->patternContainsWildcard($path_pattern)) {
+                $alternate_pattern = $this->getAlternateTrailingSlashPattern($path_pattern);
+                if ($alternate_pattern !== $path_pattern) {
+                    $patterns_to_match[] = $alternate_pattern;
+                }
+            }
+
+            foreach ($patterns_to_match as $candidate_pattern) {
+                if (fnmatch($candidate_pattern, $uriRaw) || fnmatch($candidate_pattern, $uriDecoded)) {
+                    $this->ignoreRequest("skip-path-$path_pattern");
+                    break 2;
+                }
             }
         }
+    }
+
+    private function patternContainsWildcard($pattern)
+    {
+        return strpbrk($pattern, '*?[') !== false;
+    }
+
+    private function getAlternateTrailingSlashPattern($pattern)
+    {
+        if ($pattern === '/') {
+            return $pattern;
+        }
+
+        $query = '';
+        $query_position = strpos($pattern, '?');
+        if ($query_position !== false) {
+            $query = substr($pattern, $query_position);
+            $pattern = substr($pattern, 0, $query_position);
+        }
+
+        if ($pattern === '') {
+            return $query === '' ? $pattern : $pattern . $query;
+        }
+
+        if (substr($pattern, -1) === '/') {
+            $pattern = rtrim($pattern, '/');
+        } else {
+            $pattern .= '/';
+        }
+
+        if ($pattern === '') {
+            $pattern = '/';
+        }
+
+        return $pattern . $query;
     }
 
     public function ignoreParams($paramNames)

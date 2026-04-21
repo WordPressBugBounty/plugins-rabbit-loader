@@ -19,8 +19,9 @@ class RabbitLoader_21_Admin
         add_action('network_admin_notices', 'RabbitLoader_21_Admin::admin_notices');
         add_action('admin_menu', 'RabbitLoader_21_Admin::leftMenuOption');
         add_action('admin_enqueue_scripts', function () {
+            $is_rl_page = RabbitLoader_21_Util_Core::isRLPage();
             $dependencies = ['jquery'];
-            if (RabbitLoader_21_Util_Core::isRLPage()) {
+            if ($is_rl_page) {
                 wp_enqueue_script('rabbitloader-react', 'no', [], false);
                 wp_enqueue_script('rabbitloader-react-dom', 'no', [], false);
                 $dependencies[] = 'rabbitloader-react';
@@ -28,13 +29,23 @@ class RabbitLoader_21_Admin
             }
 
             wp_enqueue_script('rabbitloader-index', RABBITLOADER_PLUG_URL . 'admin/js/index.js', $dependencies, RABBITLOADER_PLUG_VERSION);
-            $localVars = [
-                'admin_ajax' => admin_url('admin-ajax.php'),
-                'rl_nonce' => wp_create_nonce('rl-ajax-nonce'),
-                'rl_acct' => self::isPluginActivated(),
-            ];
-            //wp_localize_script('rabbitloader-index', 'rabbitloader_local_vars', $localVars);
-            wp_add_inline_script('rabbitloader-index', 'RLAdmin.Init(window, ' . json_encode($localVars) . ');');
+            if ($is_rl_page) {
+                $guard_config = wp_json_encode([
+                    'adminAjax' => admin_url('admin-ajax.php'),
+                    'isConnected' => self::isPluginActivated(),
+                ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+                if ($guard_config !== false) {
+                    wp_add_inline_script('rabbitloader-index', 'window.RLConflictGuardConfig = ' . $guard_config . ';', 'before');
+                }
+
+                wp_enqueue_script('rabbitloader-conflict-guard', RABBITLOADER_PLUG_URL . 'admin/js/conflict-guard.js', ['rabbitloader-index'], RABBITLOADER_PLUG_VERSION, true);
+            }
+            if ($is_rl_page && self::isPluginActivated()) {
+                $boot_data = wp_json_encode(self::getAdminBootData(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+                if ($boot_data !== false) {
+                    wp_add_inline_script('rabbitloader-index', 'window.rabbitloader_local_vars = ' . $boot_data . ';', 'before');
+                }
+            }
         });
 
         $purge_func = function () {
@@ -59,32 +70,254 @@ class RabbitLoader_21_Admin
         add_action('wp_ajax_rabbitloader_ajax_purge', $purge_func);
         add_action('wp_ajax_nopriv_rabbitloader_ajax_purge', $purge_func);
 
-        add_action('wp_ajax_rabbitloader_mode_change', function () {
+        $mode_change_func = function () {
             RL21UtilWP::verifyAjaxNonce();
 
-            if (!current_user_can('manage_options')) {
-                #the use is not authorized to manage options
+            if (!RabbitLoader_21_Admin::canAccessModeAjax()) {
                 wp_send_json_error(null, 403);
                 return;
             }
 
+            $private_mode = !empty($_POST['private_mode']);
+            RabbitLoader_21_Admin::updateModeValue($private_mode);
             $response = [
-                'result' => true
+                'result' => true,
+                'private_mode' => $private_mode,
+                'me_mode' => $private_mode,
+                'mode' => $private_mode ? 'me' : 'everyone'
             ];
 
-            $private_mode = !empty($_POST['private_mode']);
-            RabbitLoader_21_Core::getWpUserOption($user_options);
-            $user_options['private_mode_val'] = $private_mode;
-            $user_options['private_mode_ts'] = date('c');
-            RabbitLoader_21_Core::updateUserOption($user_options);
+            RabbitLoader_21_Core::sendJsonResponse($response);
+        };
 
-            try {
-                //remove public pages cache, main purpose is to purge TPV
-                RabbitLoader_21_TP::purge_all($tp_purge_count);
-            } catch (\Throwable $e) {
-                RabbitLoader_21_Core::on_exception($e);
+        add_action('wp_ajax_rabbitloader_mode_change', $mode_change_func);
+        add_action('wp_ajax_nopriv_rabbitloader_mode_change', $mode_change_func);
+
+        $mode_get_func = function () {
+            if (empty($_POST['rl_nonce'])) {
+                $request_nonce = RabbitLoader_21_Util_Core::get_param('rl_nonce', true);
+                if (!empty($request_nonce)) {
+                    $_POST['rl_nonce'] = $request_nonce;
+                }
             }
 
+            if (empty($_POST['token'])) {
+                $request_token = RabbitLoader_21_Util_Core::get_param('token', true);
+                if (!empty($request_token)) {
+                    $_POST['token'] = $request_token;
+                }
+            }
+
+            RL21UtilWP::verifyAjaxNonce();
+
+            if (!RabbitLoader_21_Admin::canAccessModeAjax()) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            RabbitLoader_21_Core::getWpUserOption($user_options);
+            $private_mode = !empty($user_options['private_mode_val']);
+            $response = [
+                'result' => true,
+                'private_mode' => $private_mode,
+                'me_mode' => $private_mode,
+                'mode' => $private_mode ? 'me' : 'everyone'
+            ];
+
+            RabbitLoader_21_Core::sendJsonResponse($response);
+        };
+
+        add_action('wp_ajax_rabbitloader_mode_get', $mode_get_func);
+        add_action('wp_ajax_nopriv_rabbitloader_mode_get', $mode_get_func);
+        add_action('wp_ajax_rabbitloader_get_exclusions', function () {
+            RL21UtilWP::verifyAjaxNonce();
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            $response = self::getExcludePatternsState();
+            RabbitLoader_21_Core::sendJsonResponse($response);
+        });
+        add_action('wp_ajax_rabbitloader_add_exclusion', function () {
+            $json_body = json_decode(file_get_contents('php://input'), true);
+            if (is_array($json_body)) {
+                foreach ($json_body as $key => $value) {
+                    $_POST[$key] = $value;
+                }
+            }
+
+            RL21UtilWP::verifyAjaxNonce();
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            $incoming_patterns = [];
+            $single_pattern = '';
+
+            if (isset($_POST['pattern'])) {
+                $single_pattern = wp_unslash($_POST['pattern']);
+            } elseif (isset($_GET['pattern'])) {
+                $single_pattern = wp_unslash($_GET['pattern']);
+            }
+
+            if (!empty($single_pattern)) {
+                $incoming_patterns[] = $single_pattern;
+            }
+
+            if (!empty($_POST['patterns']) && is_array($_POST['patterns'])) {
+                foreach ($_POST['patterns'] as $pattern) {
+                    $incoming_patterns[] = $pattern;
+                }
+            }
+
+            $normalized_patterns = self::normalizeExcludePatterns($incoming_patterns);
+            if (empty($normalized_patterns)) {
+                wp_send_json_error(['message' => 'At least one valid exclusion pattern is required.'], 400);
+                return;
+            }
+
+            $response = self::addExcludePatterns($normalized_patterns);
+            RabbitLoader_21_Core::sendJsonResponse($response);
+        });
+        add_action('wp_ajax_rabbitloader_remove_exclusion', function () {
+            $json_body = json_decode(file_get_contents('php://input'), true);
+            if (is_array($json_body)) {
+                foreach ($json_body as $key => $value) {
+                    $_POST[$key] = $value;
+                }
+            }
+
+            RL21UtilWP::verifyAjaxNonce();
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            $incoming_patterns = [];
+            $single_pattern = '';
+
+            if (isset($_POST['pattern'])) {
+                $single_pattern = wp_unslash($_POST['pattern']);
+            } elseif (isset($_GET['pattern'])) {
+                $single_pattern = wp_unslash($_GET['pattern']);
+            }
+
+            if (!empty($single_pattern)) {
+                $incoming_patterns[] = $single_pattern;
+            }
+
+            if (!empty($_POST['patterns']) && is_array($_POST['patterns'])) {
+                foreach ($_POST['patterns'] as $pattern) {
+                    $incoming_patterns[] = $pattern;
+                }
+            }
+
+            $normalized_patterns = self::normalizeExcludePatterns($incoming_patterns);
+            if (empty($normalized_patterns)) {
+                wp_send_json_error(['message' => 'At least one valid exclusion pattern is required.'], 400);
+                return;
+            }
+
+            $response = self::removeExcludePatterns($normalized_patterns);
+            RabbitLoader_21_Core::sendJsonResponse($response);
+        });
+        add_action('wp_ajax_rabbitloader_conflicts', function () {
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            $context = sanitize_text_field(RabbitLoader_21_Util_Core::get_param('context'));
+            $isActivationFlow = strcmp($context, 'connected') !== 0;
+            $response = RabbitLoader_21_Conflicts::getConflictState($isActivationFlow);
+            RabbitLoader_21_Core::sendJsonResponse($response);
+        });
+        add_action('wp_ajax_rabbitloader_admin_boot', function () {
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            RabbitLoader_21_Core::sendJsonResponse(self::getAdminBootData());
+        });
+        add_action('wp_ajax_rabbitloader_save_keys', function () {
+            $json_body = json_decode(file_get_contents('php://input'), true);
+            if (is_array($json_body)) {
+                foreach ($json_body as $key => $value) {
+                    $_POST[$key] = $value;
+                }
+            }
+
+            RL21UtilWP::verifyAjaxNonce();
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            $conflict_state = RabbitLoader_21_Conflicts::getConflictState(true);
+            if (!empty($conflict_state['activation_blocked'])) {
+                $conflict_state['result'] = false;
+                if (empty($conflict_state['message'])) {
+                    $conflict_state['message'] = RL21UtilWP::__('Resolve the blocking RabbitLoader conflict(s) before connecting this site.');
+                }
+
+                status_header(409);
+                RabbitLoader_21_Core::sendJsonResponse($conflict_state);
+            }
+
+            $encoded_token = RabbitLoader_21_Util_Core::get_param('rl-token', true);
+            $decoded_token = !empty($encoded_token) ? base64_decode($encoded_token, true) : false;
+            if (empty($decoded_token)) {
+                wp_send_json_error(['message' => 'Invalid token'], 400);
+                return;
+            }
+
+            $tokens = json_decode($decoded_token, true);
+            if (empty($tokens['api_token'])) {
+                wp_send_json_error(['message' => 'Invalid token'], 400);
+                return;
+            }
+
+            $urlparts = parse_url(home_url());
+            RabbitLoader_21_Core::update_api_tokens($tokens['api_token'], $urlparts['host'], $tokens['did'], '');
+            if (isset($tokens['cdn_prefix'])) {
+                update_option('rabbitloader_cdn_prefix', $tokens['cdn_prefix'], true);
+            }
+
+            do_action('rl_site_connected');
+
+            $response = self::getAdminBootData();
+            $response['result'] = true;
+            RabbitLoader_21_Core::sendJsonResponse($response);
+        });
+        add_action('wp_ajax_rabbitloader_disconnect', function () {
+            RL21UtilWP::verifyAjaxNonce();
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            self::disconnectPlugin();
+
+            $response = [
+                'result' => true,
+                'admin_ajax' => admin_url('admin-ajax.php'),
+                'rl_nonce' => wp_create_nonce('rl-ajax-nonce'),
+                'rl_acct' => false,
+                'is_connected' => false,
+                'api_token' => '',
+                'did' => '',
+                'domain' => '',
+                'plan_title' => '',
+                'home_page_url_id' => ''
+            ];
             RabbitLoader_21_Core::sendJsonResponse($response);
         });
         add_action('wp_ajax_rabbitloader_ajax_cron', function () {
@@ -119,6 +352,149 @@ class RabbitLoader_21_Admin
 
     public static function init() {}
 
+    private static function canAccessModeAjax()
+    {
+        if (!empty($_POST['token'])) {
+            return true;
+        }
+
+        return current_user_can('manage_options');
+    }
+
+    private static function normalizeExcludePatterns($patterns)
+    {
+        if (!is_array($patterns)) {
+            $patterns = [$patterns];
+        }
+
+        $normalized = [];
+        foreach ($patterns as $pattern) {
+            if (!is_scalar($pattern)) {
+                continue;
+            }
+
+            $pattern = sanitize_text_field((string) $pattern);
+            $pattern = preg_replace('/[\r\n\t]+/', '', $pattern);
+            $pattern = trim($pattern);
+
+            if ($pattern === '' || strpos($pattern, "\0") !== false) {
+                continue;
+            }
+
+            $normalized[$pattern] = true;
+        }
+
+        return array_keys($normalized);
+    }
+
+    private static function getExcludePatternsState()
+    {
+        RabbitLoader_21_Core::getWpUserOption($user_options);
+        $patterns = self::normalizeExcludePatterns(explode("\n", $user_options['exclude_patterns']));
+
+        return [
+            'result' => true,
+            'patterns' => $patterns,
+            'exclude_patterns' => implode("\n", $patterns),
+            'count' => count($patterns),
+        ];
+    }
+
+    private static function addExcludePatterns($patterns)
+    {
+        RabbitLoader_21_Core::getWpUserOption($user_options);
+        $existing_patterns = self::normalizeExcludePatterns(explode("\n", $user_options['exclude_patterns']));
+        $existing_map = [];
+        foreach ($existing_patterns as $pattern) {
+            $existing_map[$pattern] = true;
+        }
+
+        $added_patterns = [];
+        foreach ($patterns as $pattern) {
+            if (isset($existing_map[$pattern])) {
+                continue;
+            }
+
+            $existing_map[$pattern] = true;
+            $existing_patterns[] = $pattern;
+            $added_patterns[] = $pattern;
+        }
+
+        $user_options['exclude_patterns'] = implode("\n", $existing_patterns);
+        RabbitLoader_21_Core::updateUserOption($user_options);
+
+        if (!empty($added_patterns)) {
+            RL21UtilWP::onPostChange(RL21UtilWP::POST_ID_ALL);
+        }
+
+        return [
+            'result' => true,
+            'message' => empty($added_patterns) ? 'Exclusion pattern already exists.' : 'Exclusion pattern(s) added successfully.',
+            'added_patterns' => $added_patterns,
+            'patterns' => $existing_patterns,
+            'exclude_patterns' => $user_options['exclude_patterns'],
+            'count' => count($existing_patterns),
+        ];
+    }
+
+    private static function removeExcludePatterns($patterns)
+    {
+        RabbitLoader_21_Core::getWpUserOption($user_options);
+        $existing_patterns = self::normalizeExcludePatterns(explode("\n", $user_options['exclude_patterns']));
+        $remove_map = [];
+        foreach ($patterns as $pattern) {
+            $remove_map[$pattern] = true;
+        }
+
+        $remaining_patterns = [];
+        $removed_patterns = [];
+        foreach ($existing_patterns as $pattern) {
+            if (isset($remove_map[$pattern])) {
+                $removed_patterns[] = $pattern;
+                continue;
+            }
+
+            $remaining_patterns[] = $pattern;
+        }
+
+        $user_options['exclude_patterns'] = implode("\n", $remaining_patterns);
+        RabbitLoader_21_Core::updateUserOption($user_options);
+
+        if (!empty($removed_patterns)) {
+            RL21UtilWP::onPostChange(RL21UtilWP::POST_ID_ALL);
+        }
+
+        return [
+            'result' => true,
+            'message' => empty($removed_patterns) ? 'Exclusion pattern not found.' : 'Exclusion pattern(s) removed successfully.',
+            'removed_patterns' => $removed_patterns,
+            'patterns' => $remaining_patterns,
+            'exclude_patterns' => $user_options['exclude_patterns'],
+            'count' => count($remaining_patterns),
+        ];
+    }
+
+    private static function updateModeValue($private_mode)
+    {
+        RabbitLoader_21_Core::getWpUserOption($user_options);
+        $user_options['private_mode_val'] = !empty($private_mode);
+        $user_options['private_mode_ts'] = date('c');
+        RabbitLoader_21_Core::updateUserOption($user_options);
+
+        try {
+            // remove public pages cache, main purpose is to purge TPV
+            RabbitLoader_21_TP::purge_all($tp_purge_count);
+        } catch (\Throwable $e) {
+            RabbitLoader_21_Core::on_exception($e);
+        }
+    }
+
+    protected static function disconnectPlugin()
+    {
+        RabbitLoader_21_Core::update_api_tokens('', '', '', 'user action disconnect');
+        delete_transient('rabbitloader_trans_overview_data');
+    }
+
     public static function leftMenuOption()
     {
         self::get_warnings($notification_count, false);
@@ -152,6 +528,24 @@ class RabbitLoader_21_Admin
     {
 
         return !empty(RabbitLoader_21_Core::getWpOptVal('api_token'));
+    }
+
+    protected static function getAdminBootData()
+    {
+        $overview = RabbitLoader_21_Tab_Init::getOverviewData();
+        $is_connected = self::isPluginActivated();
+
+        return [
+            'admin_ajax' => admin_url('admin-ajax.php'),
+            'rl_nonce' => wp_create_nonce('rl-ajax-nonce'),
+            'rl_acct' => $is_connected,
+            'is_connected' => $is_connected,
+            'api_token' => RabbitLoader_21_Core::getWpOptVal('api_token'),
+            'did' => RabbitLoader_21_Core::getWpOptVal('did'),
+            'domain' => RabbitLoader_21_Core::getWpOptVal('domain'),
+            'plan_title' => isset($overview['plan_title']) ? $overview['plan_title'] : '',
+            'home_page_url_id' => isset($overview['home_page_url_id']) ? $overview['home_page_url_id'] : ''
+        ];
     }
 
     public static function admin_notices()

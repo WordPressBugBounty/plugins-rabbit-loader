@@ -6,7 +6,7 @@ Tags: performance, core web vitals, pagespeed, caching, cdn, image optimization
 
 Requires at least: 5.0  
 Tested up to: 6.8.3  
-Stable tag: 2.24.5
+Stable tag: 3.0.0
 Requires PHP: 5.6 
 License: GNU General Public License, version 2  
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
@@ -197,8 +197,10 @@ Yes. RabbitLoader is fully translation-ready and community contributions are wel
 5. Integrated Content Delivery Network
 
 == Changelog ==
-= 2.24.5 =
-* remote purge function
+= 3.0.0 =
+* rabbitloader new onboarding flow
+* better UI for users
+* new help section
 
 = 2.24.4 =
 * adding new rl chat

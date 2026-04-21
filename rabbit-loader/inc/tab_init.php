@@ -12,7 +12,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
 
         wp_enqueue_style('rabbitloader-inter', 'https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
 
-        self::rlTabJS();
+        // self::rlTabJS();
 
 ?>
 
@@ -20,45 +20,46 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
             <?php
             try {
                 $tab = self::decideTabToShow($isConnected);
+                echo '<div id="rabbitloader-root"></div>';
                 if ($isConnected) {
-                    echo '<h1>' . esc_html(get_admin_page_title()) . '</h1>';
+                    // echo '<h1>' . esc_html(get_admin_page_title()) . '</h1>';
 
-                    self::echoTabBar($tab);
+                    // self::echoTabBar($tab);
 
-                    echo '<div id="mfe_rl-chat"></div>';
+                    // echo '<div id="mfe_rl-chat"></div>';
 
-                    if ($tab == 'exclusions') {
-                        RabbitLoader_21_Tab_Exclusions::init();
-                        RabbitLoader_21_Tab_Exclusions::echoMainContent();
-                    } else if ($tab == 'settings') {
-                        RabbitLoader_21_Tab_Settings::init();
-                        RabbitLoader_21_Tab_Settings::echoMainContent();
-                    } else if ($tab == 'help') {
-                        RabbitLoader_21_Tab_Help::init();
-                        RabbitLoader_21_Tab_Help::echoMainContent();
-                    } else if ($tab == 'log') {
-                        RabbitLoader_21_Tab_Log::init();
-                        RabbitLoader_21_Tab_Log::echoMainContent();
-                    } else if ($tab == 'urls') {
-                        RabbitLoader_21_Tab_Urls::init();
-                        RabbitLoader_21_Tab_Urls::echoMainContent();
-                    } else if ($tab == 'usage') {
-                        RabbitLoader_21_Tab_Usage::init();
-                        RabbitLoader_21_Tab_Usage::echoMainContent();
-                        // } else if ($tab == 'images') {
-                        //     RabbitLoader_21_Tab_Images::init();
-                        //     RabbitLoader_21_Tab_Images::echoMainContent();
-                    } else if ($tab == 'css') {
-                        RabbitLoader_21_Tab_Css::init();
-                        RabbitLoader_21_Tab_Css::echoMainContent();
-                    } else {
-                        //anything not defined will show the home tab
-                        RabbitLoader_21_Tab_Home::init();
-                        RabbitLoader_21_Tab_Home::echoMainContent();
-                    }
+                    // if ($tab == 'exclusions') {
+                    //     RabbitLoader_21_Tab_Exclusions::init();
+                    //     RabbitLoader_21_Tab_Exclusions::echoMainContent();
+                    // } else if ($tab == 'settings') {
+                    //     RabbitLoader_21_Tab_Settings::init();
+                    //     RabbitLoader_21_Tab_Settings::echoMainContent();
+                    // } else if ($tab == 'help') {
+                    //     RabbitLoader_21_Tab_Help::init();
+                    //     RabbitLoader_21_Tab_Help::echoMainContent();
+                    // } else if ($tab == 'log') {
+                    //     RabbitLoader_21_Tab_Log::init();
+                    //     RabbitLoader_21_Tab_Log::echoMainContent();
+                    // } else if ($tab == 'urls') {
+                    //     RabbitLoader_21_Tab_Urls::init();
+                    //     RabbitLoader_21_Tab_Urls::echoMainContent();
+                    // } else if ($tab == 'usage') {
+                    //     RabbitLoader_21_Tab_Usage::init();
+                    //     RabbitLoader_21_Tab_Usage::echoMainContent();
+                    //     // } else if ($tab == 'images') {
+                    //     //     RabbitLoader_21_Tab_Images::init();
+                    //     //     RabbitLoader_21_Tab_Images::echoMainContent();
+                    // } else if ($tab == 'css') {
+                    //     RabbitLoader_21_Tab_Css::init();
+                    //     RabbitLoader_21_Tab_Css::echoMainContent();
+                    // } else {
+                    //     //anything not defined will show the home tab
+                    //     RabbitLoader_21_Tab_Home::init();
+                    //     RabbitLoader_21_Tab_Home::echoMainContent();
+                    // }
                 } else {
-                    RabbitLoader_21_Tab_Settings::init();
-                    RabbitLoader_21_Tab_Settings::echoMainContent();
+                    // RabbitLoader_21_Tab_Settings::init();
+                    // RabbitLoader_21_Tab_Settings::echoMainContent();
                 }
             } catch (Throwable $e) {
                 RabbitLoader_21_Core::on_exception($e);

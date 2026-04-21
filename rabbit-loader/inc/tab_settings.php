@@ -25,7 +25,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
         }
 
         if (strcmp($rlaction, 'disconnect') === 0) {
-            RabbitLoader_21_Core::update_api_tokens('', '', '', 'user action disconnect');
+            self::disconnectPlugin();
             $isConnected = false;
             $url_connect = esc_url(add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => false)));
             echo '<script>window.location="' . $url_connect . '";</script>';
@@ -54,6 +54,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
         }
         if ($isConnected) {
             $url_disconnect = esc_url(add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => 'disconnect')));
+            $url_connected = esc_url(add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => false)));
 ?>
             <div class="" style="max-width: 1160px; margin:40px auto;">
                 <?php
@@ -61,7 +62,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
                 self::general();
                 self::optimizationRule();
                 self::advanceSettings();
-                self::echoConnectedBox($url_disconnect);
+                self::echoConnectedBox($url_disconnect, $url_connected);
                 ?>
             </div>
         <?php
@@ -83,18 +84,25 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
                     <p>on Google PageSpeed Insight</p>
 
                     <?php
-                    $conflictPluginMessages = RabbitLoader_21_Conflicts::getMessages(true);
-                    if (empty($conflictPluginMessages)) {
+                    $conflictState = RabbitLoader_21_Conflicts::getConflictState(true);
+                    $conflictPluginMessages = empty($conflictState['messages']) ? [] : $conflictState['messages'];
+                    foreach ($conflictPluginMessages as $plugMessage) {
+                        echo '<div class="alert alert-danger" role="alert">';
+                        _e($plugMessage, RABBITLOADER_TEXT_DOMAIN);
+                        echo '</div>';
+                    }
+
+                    if (empty($conflictState['activation_blocked'])) {
                         echo '<a href="' . $url_oauth . '" class="rl-btn rl-btn-primary rl-btn-lg my-4">Activate RabbitLoader</a>';
                     } else {
-                        foreach ($conflictPluginMessages as $plugMessage) {
-                            echo '<div class="alert alert-danger" role="alert">';
-                            _e($plugMessage, RABBITLOADER_TEXT_DOMAIN);
-                            echo '</div>';
-                        }
-
                         echo '<div class="my-4">';
-                        _e('The above warning(s) need to be fixed before activating RabbitLoader.');
+                        _e('Resolve the blocking warning(s) above before activating RabbitLoader.');
+                        echo '</div>';
+                    }
+
+                    if (!empty($conflictPluginMessages) && empty($conflictState['activation_blocked'])) {
+                        echo '<div class="my-4">';
+                        _e('The above warning(s) should be reviewed before activating RabbitLoader.');
                         echo '</div>';
                     }
                     ?>
@@ -114,7 +122,7 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
     <?php
     }
 
-    private static function echoConnectedBox($disconnect_url)
+    private static function echoConnectedBox($disconnect_url, $redirect_url)
     {
     ?>
         <div class="row mb-4">
@@ -127,7 +135,14 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
                             <span>Your website is connected with RabbitLoader.</span>
 
                             <div class="mt-4">
-                                <a type="button" class="btn btn-outline-danger" href="<?php echo $disconnect_url; ?>">Disconnect from RabbitLoader</a>
+                                <a
+                                    type="button"
+                                    class="btn btn-outline-danger"
+                                    id="rabbitloader-disconnect-btn"
+                                    href="<?php echo $disconnect_url; ?>"
+                                    data-ajax-url="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+                                    data-redirect-url="<?php echo $redirect_url; ?>"
+                                    data-rl-nonce="<?php echo esc_attr(wp_create_nonce('rl-ajax-nonce')); ?>">Disconnect from RabbitLoader</a>
                             </div>
                         </div>
 
@@ -139,6 +154,59 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
                 </div>
             </div>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var disconnectBtn = document.getElementById('rabbitloader-disconnect-btn');
+                if (!disconnectBtn) {
+                    return;
+                }
+
+                disconnectBtn.addEventListener('click', async function(event) {
+                    event.preventDefault();
+
+                    if (disconnectBtn.dataset.loading === '1') {
+                        return;
+                    }
+
+                    var originalLabel = disconnectBtn.textContent;
+                    disconnectBtn.dataset.loading = '1';
+                    disconnectBtn.classList.add('disabled');
+                    disconnectBtn.setAttribute('aria-disabled', 'true');
+                    disconnectBtn.textContent = 'Disconnecting...';
+
+                    try {
+                        var payload = new URLSearchParams();
+                        payload.set('action', 'rabbitloader_disconnect');
+                        payload.set('rl_nonce', disconnectBtn.getAttribute('data-rl-nonce') || '');
+
+                        var response = await fetch(disconnectBtn.getAttribute('data-ajax-url') || '', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                            },
+                            body: payload.toString()
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Request failed');
+                        }
+
+                        var result = await response.json();
+                        if (!result || result.result !== true) {
+                            throw new Error('Disconnect failed');
+                        }
+
+                        window.location = disconnectBtn.getAttribute('data-redirect-url') || disconnectBtn.href;
+                    } catch (error) {
+                        disconnectBtn.dataset.loading = '0';
+                        disconnectBtn.classList.remove('disabled');
+                        disconnectBtn.removeAttribute('aria-disabled');
+                        disconnectBtn.textContent = originalLabel;
+                        window.alert('Failed to disconnect from RabbitLoader.');
+                    }
+                });
+            });
+        </script>
     <?php
     }
 

@@ -73,6 +73,36 @@ class RL21UtilWP
             (function_exists('get_included_files') && in_array($incl_path . 'admin-ajax.php', get_included_files()));
     }
 
+    public static function is_admin_request()
+    {
+        if (function_exists('is_admin') && is_admin()) {
+            return true;
+        }
+
+        $request_uri = empty($_SERVER['REQUEST_URI']) ? '' : parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        if (!empty($request_uri) && strpos($request_uri, '/wp-admin/') === 0) {
+            return true;
+        }
+
+        $php_self = empty($_SERVER['PHP_SELF']) ? '' : $_SERVER['PHP_SELF'];
+        return !empty($php_self) && strpos($php_self, '/wp-admin/') === 0;
+    }
+
+    public static function is_rl_test_request()
+    {
+        if (isset($_GET['rltest'])) {
+            return true;
+        }
+
+        $query_string = empty($_SERVER['QUERY_STRING']) ? '' : $_SERVER['QUERY_STRING'];
+        if (empty($query_string)) {
+            return false;
+        }
+
+        parse_str($query_string, $query_vars);
+        return isset($query_vars['rltest']);
+    }
+
     public static function is_rest()
     {
         return defined('REST_REQUEST') && REST_REQUEST;
