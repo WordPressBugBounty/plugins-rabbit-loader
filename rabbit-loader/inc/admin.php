@@ -491,6 +491,29 @@ class RabbitLoader_21_Admin
 
     protected static function disconnectPlugin()
     {
+        $disconnect_context = [
+            'did' => RabbitLoader_21_Core::getWpOptVal('did'),
+            'domain' => RabbitLoader_21_Core::getWpOptVal('domain'),
+            'token_present' => !empty(RabbitLoader_21_Core::getWpOptVal('api_token')),
+        ];
+        error_log('RabbitLoader manual disconnect test: sending heartbeat ' . wp_json_encode($disconnect_context));
+
+        $post_data = ['disconnect' => 1];
+        $http = RabbitLoader_21_Core::callPOSTAPI('domain/heartbeat', $post_data, $apiError, $apiMessage);
+        $response_body = !empty($http['body']) && is_array($http['body']) ? $http['body'] : [];
+        $response_context = [
+            'status' => empty($http['response']['code']) ? 0 : (int) $http['response']['code'],
+            'result' => array_key_exists('result', $response_body) ? (bool) $response_body['result'] : null,
+            'message' => empty($response_body['message']) ? (isset($apiMessage) ? (string) $apiMessage : '') : (string) $response_body['message'],
+            'api_error' => (bool) $apiError,
+            'token_present_after_call' => !empty(RabbitLoader_21_Core::getWpOptVal('api_token')),
+        ];
+        error_log('RabbitLoader manual disconnect test: heartbeat response ' . wp_json_encode($response_context));
+
+        if ($apiError) {
+            error_log('RabbitLoader: backend manual disconnect notification failed.');
+        }
+        error_log('RabbitLoader manual disconnect test: continuing to clear local credentials');
         RabbitLoader_21_Core::update_api_tokens('', '', '', 'user action disconnect');
         delete_transient('rabbitloader_trans_overview_data');
     }
@@ -790,8 +813,12 @@ class RabbitLoader_21_Admin
         return RabbitLoader_21_Util_Core::fpc($wp_config_path, $file_contents, WP_DEBUG);
     }
 
-    public static function plugin_deactivate()
+    public static function plugin_deactivate($network_wide = false, $notifyBackend = true)
     {
+        if ($notifyBackend) {
+            RabbitLoader_21_Core::notify_backend_disconnect('plugin deactivate', $apiError, $apiMessage);
+        }
+
         try {
             self::update_wp_config_const('WP_CACHE', 'false');
             $advanced_cache_file = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'advanced-cache.php';
@@ -806,10 +833,9 @@ class RabbitLoader_21_Admin
 
     public static function plugin_uninstall()
     {
-        self::plugin_deactivate();
+        self::plugin_deactivate(false, false);
 
-        $post_data['uninstall'] = 1;
-        $http = RabbitLoader_21_Core::callPOSTAPI('domain/heartbeat', $post_data, $apiError, $apiMessage);
+        RabbitLoader_21_Core::notify_backend_disconnect('plugin uninstall', $apiError, $apiMessage);
 
         try {
             RabbitLoader_21_Core::cleanAllCachedFiles();
@@ -825,6 +851,15 @@ class RabbitLoader_21_Admin
 
     private static function rl_site_connected()
     {
+        $api_token = RabbitLoader_21_Core::getWpOptVal('api_token');
+        $domain = RabbitLoader_21_Core::getWpOptVal('domain');
+        $did = RabbitLoader_21_Core::getWpOptVal('did');
+        RabbitLoader_21_Core::callPOSTAPI('domain/heartbeat', [], $apiError, $apiMessage);
+        if ($apiError) {
+            RabbitLoader_21_Core::update_api_tokens($api_token, $domain, $did, 'connected; heartbeat notification failed');
+            error_log('RabbitLoader: backend connection heartbeat failed after saving credentials.');
+        }
+
         try {
             RabbitLoader_21_TP::purge_all($tp_purge_count);
         } catch (\Throwable $e) {

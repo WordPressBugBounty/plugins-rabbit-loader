@@ -22,11 +22,19 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
                 $tab = self::decideTabToShow($isConnected);
                 echo '<div id="rabbitloader-root"></div>';
                 if ($isConnected) {
+                    wp_enqueue_script(
+                        'rabbitloader-chat-widget',
+                        RABBITLOADER_PLUG_URL . 'admin/js/chat-widget.js',
+                        [],
+                        RABBITLOADER_PLUG_VERSION,
+                        true
+                    );
+
                     // echo '<h1>' . esc_html(get_admin_page_title()) . '</h1>';
 
                     // self::echoTabBar($tab);
 
-                    // echo '<div id="mfe_rl-chat"></div>';
+                    echo '<div id="mfe_rl-chat"></div>';
 
                     // if ($tab == 'exclusions') {
                     //     RabbitLoader_21_Tab_Exclusions::init();

@@ -24,12 +24,26 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
             $domain .= ':' . $urlparts['port'];
         }
 
+        $disconnect_error = '';
+
         if (strcmp($rlaction, 'disconnect') === 0) {
-            self::disconnectPlugin();
-            $isConnected = false;
-            $url_connect = esc_url(add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => false)));
-            echo '<script>window.location="' . $url_connect . '";</script>';
-            return;
+            if (!current_user_can('manage_options')) {
+                $disconnect_error = 'You are not allowed to disconnect RabbitLoader.';
+            } else if (empty($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'rabbitloader_disconnect')) {
+                $disconnect_error = 'Invalid disconnect request. Please try again.';
+            } else {
+                $disconnect_success = RabbitLoader_21_Core::notify_backend_disconnect('user action disconnect', $apiError, $apiMessage);
+
+                if ($disconnect_success) {
+                    RabbitLoader_21_Core::update_api_tokens('', '', '', 'user action disconnect');
+                    $isConnected = false;
+                    $url_connect = esc_url(add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => false)));
+                    echo '<script>window.location="' . $url_connect . '";</script>';
+                    return;
+                }
+
+                $disconnect_error = empty($apiMessage) ? 'RabbitLoader could not confirm the disconnect. Please try again.' : $apiMessage;
+            }
         } else if (strcmp($rlaction, 'savekeys') === 0) {
             $connected = false;
 
@@ -53,11 +67,18 @@ class RabbitLoader_21_Tab_Settings extends RabbitLoader_21_Tab_Init
             }
         }
         if ($isConnected) {
-            $url_disconnect = esc_url(add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => 'disconnect')));
+            $url_disconnect = esc_url(wp_nonce_url(add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => 'disconnect')), 'rabbitloader_disconnect'));
             $url_connected = esc_url(add_query_arg(array('tab' => $tab, 'page' => $page, 'rlaction' => false)));
 ?>
             <div class="" style="max-width: 1160px; margin:40px auto;">
                 <?php
+                if (!empty($disconnect_error)) {
+                    echo '<div class="notice notice-error"><p><b>';
+                    RL21UtilWP::_e('Disconnect failed');
+                    echo ': </b>';
+                    echo esc_html($disconnect_error);
+                    echo '</p></div>';
+                }
                 self::show_cf_box();
                 self::general();
                 self::optimizationRule();

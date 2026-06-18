@@ -248,6 +248,128 @@ class RabbitLoader_21_Core
         return $http;
     }
 
+    private static function log_debug($message, $context = [])
+    {
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+            return;
+        }
+
+        try {
+            RabbitLoader_21_Core::get_log_file('rl_debug', $debug_log);
+            $line = date('c') . ' ' . $message;
+            if (!empty($context)) {
+                $line .= ' ' . json_encode($context, JSON_INVALID_UTF8_IGNORE);
+            }
+            $line .= PHP_EOL;
+            $cache_dir = RL21UtilWP::get_cache_dir('');
+            if (!file_exists($cache_dir)) {
+                @mkdir($cache_dir, 0755, true);
+            }
+            file_put_contents($debug_log, $line, FILE_APPEND | LOCK_EX);
+        } catch (Throwable $e) {
+            RabbitLoader_21_Core::on_exception($e);
+        }
+    }
+
+    public static function notify_backend_disconnect($source, &$apiError, &$apiMessage)
+    {
+        $http = [];
+        $args = [];
+        $apiError = true;
+        $apiMessage = '';
+
+        if (!RabbitLoader_21_Core::addKeys($args, $rabbitloader_field_domain)) {
+            $apiMessage = 'RabbitLoader connection token is missing. Please reconnect the plugin and try again.';
+            self::log_debug('backend disconnect skipped', [
+                'source' => $source,
+                'reason' => 'missing token',
+            ]);
+            return false;
+        }
+
+        $endpoint = 'domain/heartbeat';
+        $url = RabbitLoader_21_Core::getRLDomainV1() . 'api/v1/' . $endpoint;
+        $body = [
+            'uninstall' => 1,
+            'domain' => $rabbitloader_field_domain,
+            'plugin_cms' => 'wp',
+            'plugin_v' => RABBITLOADER_PLUG_VERSION,
+            'cms_v' => get_bloginfo('version'),
+        ];
+
+        $args['method'] = 'POST';
+        $args['body'] = $body;
+
+        self::log_debug('backend disconnect request', [
+            'source' => $source,
+            'endpoint' => $endpoint,
+            'body' => $body,
+        ]);
+
+        try {
+            $http = wp_remote_post($url, $args);
+
+            if (is_wp_error($http)) {
+                $apiMessage = $http->get_error_message();
+                if (empty($apiMessage)) {
+                    $apiMessage = 'Network error while disconnecting RabbitLoader.';
+                }
+                self::log_debug('backend disconnect wp_error', [
+                    'source' => $source,
+                    'message' => $apiMessage,
+                ]);
+
+                if (!self::isTemporaryError($apiMessage)) {
+                    RabbitLoader_21_Core::on_exception($apiMessage . $url);
+                }
+                return false;
+            }
+
+            if (!is_array($http)) {
+                $apiMessage = 'Unexpected response while disconnecting RabbitLoader.';
+                self::log_debug('backend disconnect unexpected response', [
+                    'source' => $source,
+                    'response_type' => gettype($http),
+                ]);
+                return false;
+            }
+
+            $code = intval(wp_remote_retrieve_response_code($http));
+            $raw_body = wp_remote_retrieve_body($http);
+            $parsed_body = json_decode($raw_body, true);
+
+            self::log_debug('backend disconnect response', [
+                'source' => $source,
+                'code' => $code,
+                'body' => $parsed_body === null ? $raw_body : $parsed_body,
+            ]);
+
+            if (is_array($parsed_body) && isset($parsed_body['message']) && $parsed_body['message'] !== '') {
+                $apiMessage = $parsed_body['message'];
+            }
+
+            if ($code >= 200 && $code < 300 && is_array($parsed_body) && !empty($parsed_body['result'])) {
+                $apiError = false;
+                return true;
+            }
+
+            if (empty($apiMessage)) {
+                if (in_array($code, [401, 403])) {
+                    $apiMessage = 'RabbitLoader could not authorize this disconnect request. Please try again or reconnect the plugin.';
+                } else if ($code >= 500 || $code === 0) {
+                    $apiMessage = 'RabbitLoader backend is temporarily unavailable. Please try disconnecting again.';
+                } else {
+                    $apiMessage = 'RabbitLoader backend did not confirm the disconnect. Please try again.';
+                }
+            }
+        } catch (Throwable $e) {
+            RabbitLoader_21_Core::on_exception($e);
+            $apiMessage = $e->getMessage();
+        }
+
+        return false;
+    }
+
     public static function getWpUserOption(&$user_options)
     {
         if (!empty(self::$user_options)) {

@@ -1,193 +1,213 @@
-=== RabbitLoader – AI Speed Optimization, Caching & CDN for WordPress & WooCommerce ===
+=== RabbitLoader Cache: Optimize your Website for Speed ===
 
-Contributors: sanrl, abhishekgr 
+Contributors: sanrl, abhishekgr
+Tags: cache, caching, speed optimization, pagespeed insights, core web vitals
+Requires at least: 4.7
+Tested up to: 7.0
+Stable tag: 3.0.4
+Requires PHP: 5.6
+License: GNU General Public License, version 2
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Tags: performance, core web vitals, pagespeed, caching, cdn, image optimization 
-
-Requires at least: 5.0  
-Tested up to: 6.8.3  
-Stable tag: 3.0.1
-Requires PHP: 5.6 
-License: GNU General Public License, version 2  
-License URI: https://www.gnu.org/licenses/gpl-2.0.html  
-
-All-in-one AI speed optimization plugin for WordPress & WooCommerce websites. Get faster loading pages and near-perfect PageSpeed scores — in just one click.
-
----
+RabbitLoader cache is an all-in-one performance optimization plugin. It Speeds up WordPress websites' by adding browser and CDN caching and more.
 
 == Description ==
 
-= 🚀 Load Your Pages Faster & Rank Higher =  
-RabbitLoader is an **AI-powered performance enhancement plugin** that makes your WordPress website load in milliseconds and achieve the elusive green score (90+) on PageSpeed Insights — for every page, not just your homepage.  
+RabbitLoader is a WordPress cache plugin that helps speed up your WordPress and WooCommerce websites.
 
-Unlike traditional plugins that require constant tweaking, RabbitLoader analyzes every asset on your pages — CSS, JS, images, and fonts — and applies the right optimizations automatically.  
-The result: faster pages, smoother experiences, and less time spent on manual performance tuning.  
+RabbitLoader’s Caching techniques improve the performance of your website, reduce the loading times, and help you score over 90 on [PageSpeed Insight](https://pagespeed.web.dev/ "PageSpeed Insight"). It also helps you pass the Core Web Vitals by optimizing the performance of your WordPress website.
 
-Built and tested with all major WordPress themes and builders (including Elementor, Divi, and others) — so you get the speed without the stress.  
+To optimize your WordPress website for the best possible speed, [RabbitLoader](https://rabbitloader.com/ "RabbitLoader") implements both browser cache & CDN cache. This makes your website load much faster, with results visible immediately after installation.
+
+This all-in-one speed optimization plugin implements cache and powerful performance optimization techniques to achieve a superfast WordPress website that loads instantly and delivers a good [user experience](https://userresearch.google.com/ "user experience") to visitors.
+
 
 [youtube https://www.youtube.com/watch?v=W-jYelvWE0I]
 
+[Watch bite size tutorial videos](https://rabbitloader.com/wordpress-crash-course/ "PageSpeed optimization crash course videos")
 
-👉 **[Watch bite size tutorial videos](https://rabbitloader.com/wordpress-crash-course/ "PageSpeed optimization crash course videos")**  
+**Why use the RabbitLoader Cache plugin?**
 
----
+**Faster Website:** Make your website lightning fast without hiring a developer or learning to code. Just install the plugin to supercharge your website, with results visible immediately.
 
-= 💡 How RabbitLoader Improves SEO & User Experience =  
-RabbitLoader’s AI optimizations directly improve how people interact with your site — and the results are backed by real data:  
+**Improved PageSpeed Score:** Improve the PageSpeed score of your website, reach over 90 on PageSpeed Insight test instantly by just installing the RabbitLoader cache plugin.
 
-* **Faster Loads** – Pages load in under 1 second, reducing bounce rate by up to **50%**.  
-* **Stable Visual Layouts** – Critical CSS prevents shifts; stable pages see **24% higher engagement**.  
-* **Higher PSI Scores** – Hit **90+ on PageSpeed Insights** for all pages with one plugin.  
-* **Pass Core Web Vitals** – Tuned for perfect LCP, CLS, and INP. Passing sites are **24% less likely to lose rankings**.  
-* **SEO & Conversion Gains** – A 1s improvement can boost conversions by **7%**.  
-* **More WooCommerce Sales** – Optimized product and checkout pages can increase sales by **15–30%**.  
+**Pass Core Web Vital:** **Withins:** With its unparalleled caching techniques rabbitLoader helps you Pass the [core web vitals](https://rabbitloader.com/articles/core-web-vitals/ "core web vitals") test, deliver your visitors a better user experience, help you rank higher on organic searches and enjoy an improved conversion rate.
 
-👉 With RabbitLoader, you’re not just improving speed — you’re optimizing for engagement, rankings, and conversions.  
+**All-in-one plugin:** No need to install 5 or 6 different plugins to optimize the performance of your WordPress or WooCommerce website. Be it implementing cache, optimising images or any other performance-impacting optimization, one plugin does everything you need for a super fast website.
 
----
+Keeps your WordPress admin light & eliminates the chances of conflicts among optimization plugins.
 
+**Features**
 
-= 🔄 What RabbitLoader Replaces (All-in-One vs Many) =  
-Most sites rely on 5–6 different tools: one for caching, one for images, one for CSS/JS, plus a CDN plugin. That means:  
-❌ Too many plugins to manage  
-❌ Higher conflict risk  
-❌ Extra cost and wasted time  
+**Browser Cache:** Reduces your loading time by saving the most requested contents from your website like images, code and even texts in the users’ browser cache memory for a faster loading time.
 
-RabbitLoader replaces them all:  
+**CDN Caching:** The integrated CDN saves copies of frequently accessed contents like images, codes and text in 300+ edge servers around the world & serves the contents from the nearest node when a user visits your website. The CDN cache reduces the loading time of your website for visitors from any part of the world.
 
-* Image Optimization – WebP/AVIF conversion, resizing, lazy-load.  
-* Critical CSS Generation – Per-page Critical CSS for faster first paint.  
-* Smart JS Deferral – Improves responsiveness without breaking layouts.  
-* Global CDN with Edge Caching – Worldwide low-latency delivery.  
-* Lazy Loading – Images and iframes load only when needed.  
-* Minification & Compression – HTML/CSS/JS minified with Brotli/Gzip.  
-* PageSpeed Monitoring – Built-in and included.  
+**Image Optimization:** Converts JPEG & PNG images to the [next gen formats](https://rabbitloader.com/articles/next-gen-formats/ "next gen formats") like WebP & AVIF to reduce the size by up to 30%. The lossless compression technique makes sure your images do not lose any quality. The images are delivered through the integrated CDN and cached for faster loading.
 
-👉 **One Plugin. Less Hassle. More Speed.**
+**Lazy Loading:** Sets priority for loading the contents of your website. Contents like images that are in the visible area of your website are loaded immediately and others are loaded only when needed. This reduces the initial loading time.
 
----
+**Critical CSS Generator:** On average, every page on a website contains 2 MB of CSS code, which takes significant time to render. [critical css](https://rabbitloader.com/articles/critical-css/ "critical css") is usually only 5% of the size of the original files & reduces rendering time by 90%, making it possible to achieve a very high score PageSpeed Insight & pass the Core Web Vitals.
 
-= ⚙️ Why Agencies & Developers Love RabbitLoader =  
-RabbitLoader is built for professionals who want **speed and reliability** without maintenance headaches:  
+**JavaScript Deferring:** Execution of JavaScript files that are not needed immediately upon loading the website are delayed to load the website faster.
 
-* Safe Defaults – No broken layouts or long troubleshooting.  
-* Automation – AI handles optimization, saving hours per site.  
-* Easy Control – Exclude or roll back any page instantly.  
-* Staging-Friendly – Test updates safely before going live.  
-* Multisite Ready – Manage multiple sites with per-site control.  
-* Client Reports – Show improvements with transparent metrics.  
+**Minification:** Size of your coding file is reduced with minification to reduce the page weight, as a smaller size page loads much faster.
 
----
+**What is Advanced Cache?**
 
-= ⚡ How It Works =  
-1. Install and activate RabbitLoader.  
-2. Click **Connect** (free plan available).  
-3. RabbitLoader automatically generates Critical CSS, optimizes assets, and warms the cache.  
-4. Check your **PageSpeed Insights** or Core Web Vitals — improvements appear within minutes.  
+Advanced cache allows your website to reach lightning-fast performance levels.
 
-👉 **[Watch Tutorial on YouTube](https://youtu.be/W-jYelvWE0I)**  
+It involves techniques to store the most requested content of your website like images, texts & text to be stored in the browser cache and on the CDN cache. The [Content Delivery Network](https://rabbitloader.com/origin-savings/ "Content Delivery Network") (CDN) serves the cached content to your visitors around the world as quickly as possible.
 
----
+These advanced cache invalidation techniques it make sure that your user is always served the updated content.
 
-= 🧩 Tested With Popular Hosts, Builders & Setups =  
-RabbitLoader has been tested and verified with a wide range of themes, plugins, and hosting providers.  
+**COMPATIBILITIES**
 
-**E-commerce**  
-- WooCommerce (safe checkout & cart handling)  
+RabbitLoader cache plugin is compatible with all major WordPress themes, plugins and hosting providers. It works on shared, cloud, managed & WordPress hosting providers.
 
-**Page Builders**  
-- Elementor, Divi, Bricks, Beaver Builder, Gutenberg  
+**Plugins:-**
 
-**Popular Plugins**  
-- WPForms, Contact Form 7, Formidable Forms  
-- Yoast SEO, All-in-One SEO, Rank Math  
-- Slider Revolution, OptinMonster, LiveChat  
-- BuddyPress, bbPress, Ultimate Blocks  
-- Weglot, HubSpot, Akismet, YARPP  
-- RafflePress, Shoplentor, Borderless  
-- And more...  
+*   WooCommerce
+*   WPForms
+*   All-in-One SEO
+*   Yoast SEO
+*   HubSpot
+*   Elementor
+*   LiveChat
+*   Borderless
+*   Akismet Spam Protection
+*   Slider Revolution
+*   Weglot
+*   Contact Form 7
+*   Yet Another Related Posts Plugin (YARPP)
+*   OptinMonster
+*   Formidable Forms
+*   BuddyPress
+*   bbPress
+*   WebSub
+*   RafflePress
+*   Ultimate Blocks
+*   Shoplentor
+*   Divi
+**And More..**
 
-**Themes**  
-- Astra, OceanWP, GeneratePress, Storefront  
-- Divi, Hello Elementor, Blocksy, Kadence  
-- Neve, Hestia, Sydney, Botiga, ColorMag  
-- PopularFX, and other leading WordPress themes  
+**Themes:-**
 
-**Hosting Providers**  
-- WP Engine, SiteGround, Kinsta, Hostinger  
-- Bluehost, GoDaddy, HostGator, Namecheap  
-- AWS, DigitalOcean, Hetzner, IONOS, OVHcloud  
-- Liquid Web, and most managed WordPress hosts  
+*   Hello Elementor
+*   Athemes (sydney, Botiga)
+*   Themeisle (Neve, hestia)
+*   Astra
+*   Divi
+*   OceanWP
+*   GeneratePress
+*   Storefront
+*   Themeisle
+*   Kadence
+*   Neve
+*   ColorMag
+*   Blocksy
+*   PopularFX
+**And more..**
 
-**Server Types**  
-- LiteSpeed / OpenLiteSpeed  
-- Nginx  
-- Apache  
+**Hosting:-**
 
-**CDN & Proxy Layers**  
-- Cloudflare (tested with Automatic Platform Optimization)  
+*   AWS
+*   WP Engine
+*   SiteGround
+*   OVHcloud
+*   Hostinger
+*   GoDaddy
+*   Hetzner
+*   IONOS
+*   DigitalOcean
+*   HostGator
+*   Bluehost
+*   Namecheap
+*   Liquid Web
+*   Bluehost
+*   Namecheap
+*   Liquid Web
+**And more..**
 
-👉 If your site runs WordPress, RabbitLoader works with it.  
-
----
-
-== Installation ==
-1. In **Plugins → Add New**, search for **RabbitLoader** and install.  
-2. Activate and click **Activate RabbitLoader** to link your account.  
-3. If you use **Cloudflare**, follow the optional linking prompt.  
-4. Open your homepage — RabbitLoader starts optimizing automatically.  
-
-No advanced setup needed.  
-
-—
 **SHARE THE RABBITLOADER** 💗
+
 * Join our- [Facebook Community](https://www.facebook.com/Rabbitloader/ "Facebook Community").
 * Learn from our tutorials on [YouTube Channel](https://www.youtube.com/@rabbitloader827 "YouTube Channel").
 * Contribute to [RabbitLoader’s translations](https://translate.wordpress.org/projects/wp-plugins/rabbit-loader/ "RabbitLoader’s translations").
 * Or rate us on WordPress [WordPress](https://wordpress.org/support/plugin/rabbit-loader/reviews/?filter=5#new-post
  "WordPress")🙂
 
----
-
 == Frequently Asked Questions ==
 
-= Will RabbitLoader break my design or WooCommerce? =  
-No. RabbitLoader’s AI-powered safe defaults are tested with popular themes and builders. Cart, checkout, and logged-in pages are excluded from caching by default. You can exclude any page or roll back changes anytime.  
+= Why do you need a fast website? =
+
+Most visitors would abandon your website if it's too slow to load, for mobile visitors the abandonment rate is even higher.
+
+A faster website helps you keep those visitors on your website, reducing the bounce rate. Helps with the conversion rate, and improves Core Web Vitals and PageSpeed, which in turn results in higher organic rankings.
+
+
+= How is RabbitLoader better than other cache and optimization plugins? =
+
+RabbitLoader is an all-in-one performance optimization plugin for WordPress & WooCommerce.
+
+It optimizes all performance-related areas of your website with advanced techniques, from implementing browser and CDN cache to optimizing images, parsing JavaScript, and generating critical CSS, RabbitLoader optimises everything related to performance ensuring your website is supercharged.
 
 = How long do you need to optimize a website? =
+
 The improvement of the speed would reflect instantly after installing the plugin.
+
 We start by optimizing your home page & you can see the difference in PageSpeed score immediately on Google PSI or the RabbitLoader console after installation.
+
 Optimization time for the entire website depends on the number of pages; on average a medium size website takes around 15 minutes to optimize and cache your website’s contents
+
 = What score would I achieve on the PageSeed Insights test? =
+
 Most websites using RabbitLoader reach an average PageSpeed score of over 90 for most of their web pages.
-Home pages usually score lower than other pages on your website as it usually contains sliders and other heavy graphics and scripts. 
+
+Home pages usually score lower than other pages on your website as it usually contains sliders and other heavy graphics and scripts.
+
 If you have Ads or analytics running on your pages you can either choose to run those scripts first which would lower your score or you can delay them & improve the score further.
+
 Some pages on your website might even score a perfect 100 with RabbitLoader.
 
+= Would it help me pass Core Web Vitals? =
 
-= Does it help with mobile Core Web Vitals? =  
-Yes. Critical CSS improves LCP, layout refinements reduce CLS, and smart JavaScript delay boosts INP — especially for mobile users.  
+Core Web Vitals is the 28-day average of your real visitors’ user experience.
 
-= Can I use RabbitLoader with other optimization plugins? =  
-No. RabbitLoader is an all-in-one optimization plugin. Running it alongside other caching or image tools may cause conflicts.  
+Since it's an average of 28 days, if your Core Web Vitals were failing before installing the RabbitLoader plugin it would take 3 to 4 weeks for your average user experience to improve and for your website to pass the Core Web Vitals.
 
-= Does it work with Cloudflare or server-level caching? =  
-Yes. RabbitLoader works perfectly with Cloudflare (including APO) and with LiteSpeed, Nginx, or Apache caches.  
+= What caching techniques do you use? =
+
+RabbitLoader uses both the browser caching and CDN caching techniques, to significantly boost the performance of your WordPress website.
+
+With its intelligent cache invalidation techniques, RabbitLoader makes sure your users always see the most recent version of your content, whenever you update it.
+
+= Is it compatible with WooCommerce? =
+
+Yes, RabbitLoader is fully compatible with WooCommerce. It is also compatible with common plugins and services used by WooCommerce stores.
 
 = Does RabbitLoader do mobile optimization? =
+
 Yes, RabbitLoader optimizes both desktop and mobile versions of your website. RabbitLoader’s caching techniques improve the PageSpeed score of your mobile website too.
 
+= I need help optimizing my website, can you help me? =
 
-= Does it support Multisite and Staging sites? =  
-Yes. RabbitLoader supports WordPress Multisite with per-site control. For staging, you can safely test optimizations before going live — RabbitLoader automatically re-learns assets after design changes.  
+Yes, our dedicated support team will help you install and activate RabbitLoader and resolve any issues you might face. You can [create a support ticket](https://rabbitloader.com/contact/ "create a support ticket") or start a live chat for assistance.
 
-= Is RabbitLoader free? =  
-Yes. RabbitLoader includes a free plan for smaller sites, with paid options for higher traffic and advanced usage.  
+= Would speed optimization break my website’s design? =
 
-= Is RabbitLoader translation-ready? =  
-Yes. RabbitLoader is fully translation-ready and community contributions are welcome.  
+We have extensively tested RabbitLoader with all major themes & plugins to ensure the optimization doesn’t disrupt your website. We are currently serving thousands of websites without issues.
 
-—
+If you have a custom development or design on a page and the design is being disrupted after installing RabbitLoader, you can [exclude the pages](https://rabbitloader.com/kb/exclude-urls-from-cached/ "exclude the pages") from optimization or even pause the optimization for the entire website & [contact our support](https://rabbitloader.com/contact/ "contact our support").
+
+= Is RabbitLoader free? =
+
+Yes, The RabbitLoader has a free plan with all optimization features available. If you do not have a large website with many pages or high traffic, the free plan should work for you.
+
+= I’m using Cloudflare on my website, can I install RabbitLoader? =
+Yes, you can use the RabbitLoader WordPress plugin even if you have Cloudflare on your website. You simply need to connect Cloudflare to the RabbitLoader plugin. You can read more about it [here](https://rabbitloader.com/kb/cloudflare-settings-for-best-performance/ "here").
+
 == Screenshots ==
 
 1. Supercharge Your Website's Speed
@@ -197,35 +217,10 @@ Yes. RabbitLoader is fully translation-ready and community contributions are wel
 5. Integrated Content Delivery Network
 
 == Changelog ==
-= 3.0.1 =
-* compatibility bug fix
 
-= 3.0.0 =
-* rabbitloader new onboarding flow
-* better UI for users
-* new help section
-
-= 2.24.4 =
-* adding new rl chat
-* bug fixes
-
-= 2.24.3 =
-* bug fixes
-
-= 2.24.2 =
-* bug fixes
-* redirect to rabbitloader plugin on active
-
-= 2.24.1 =
-* UI Enhancement
-* fixed JS loading issue in plugin
-
-= 2.24.0 =  
-* Updated compatibility with WordPress 6.8.3  
-* Improved AI-driven Critical CSS for WooCommerce checkout  
-* Added Bricks Builder compatibility  
-* Enhanced Cloudflare APO coexistence  
-* General stability and performance improvements 
+= 3.0.4 =
+* Tested with WordPress 7.0.
+* Compatibility and maintenance update.
 
 = 2.22.5 =
 * Improved compatibility with Elementor and Elementor Pro
@@ -270,8 +265,8 @@ Yes. RabbitLoader is fully translation-ready and community contributions are wel
 * Bugfix in purge functionality
 
 = 2.19.19 =
-* Prevent warnings when Apache server headers are missing 
-* Faster optimization 
+* Prevent warnings when Apache server headers are missing
+* Faster optimization
 
 = 2.19.18 =
 * Invalidate cache when Me mode is toggled
@@ -296,7 +291,7 @@ Yes. RabbitLoader is fully translation-ready and community contributions are wel
 * Enhancements for plugin re-install scenarios
 
 = 2.19.12 =
-* Bugfix related to feedback request message not hiding 
+* Bugfix related to feedback request message not hiding
 
 = 2.19.11 =
 * Enhancements for Nginx users
@@ -334,7 +329,7 @@ Yes. RabbitLoader is fully translation-ready and community contributions are wel
 = 2.19.1 =
 * Improved cache hit ratio
 * Compatibility fixes for the IF-SO plugin
-* Improved page detection for websites built with Elementor 
+* Improved page detection for websites built with Elementor
 
 = 2.18.9 =
 * Bugfix related to critical CSS not shown correctly in some cases
@@ -413,6 +408,5 @@ Yes. RabbitLoader is fully translation-ready and community contributions are wel
 
 = 1.0 =
 Version 1 is the first release
-By using the plugin, you agree to the RabbitLoader [Privacy Policy](https://rabbitloader.com/privacy/ "Privacy Policy") and [Terms](https://rabbitloader.com/terms/ "Terms"). 
 
-
+By using the plugin, you agree to the RabbitLoader [Privacy Policy](https://rabbitloader.com/privacy/ "Privacy Policy") and [Terms](https://rabbitloader.com/terms/ "Terms").
