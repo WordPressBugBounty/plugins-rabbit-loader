@@ -4,7 +4,7 @@ Contributors: sanrl, abhishekgr
 Tags: cache, caching, speed optimization, pagespeed insights, core web vitals
 Requires at least: 4.7
 Tested up to: 7.0
-Stable tag: 3.0.4
+Stable tag: 3.0.5
 Requires PHP: 5.6
 License: GNU General Public License, version 2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -34,13 +34,13 @@ This all-in-one speed optimization plugin implements cache and powerful performa
 
 **Pass Core Web Vital:** **Withins:** With its unparalleled caching techniques rabbitLoader helps you Pass the [core web vitals](https://rabbitloader.com/articles/core-web-vitals/ "core web vitals") test, deliver your visitors a better user experience, help you rank higher on organic searches and enjoy an improved conversion rate.
 
-**All-in-one plugin:** No need to install 5 or 6 different plugins to optimize the performance of your WordPress or WooCommerce website. Be it implementing cache, optimising images or any other performance-impacting optimization, one plugin does everything you need for a super fast website.
+**All-in-one plugin:** No need to install 5 or 6 different plugins to optimize the performance of your WordPress or WooCommerce website. Be it implementing cache, optimising images or any other performance-impacting optimization, one plugin does everything you need for a super fast website. 
 
 Keeps your WordPress admin light & eliminates the chances of conflicts among optimization plugins.
 
 **Features**
 
-**Browser Cache:** Reduces your loading time by saving the most requested contents from your website like images, code and even texts in the users’ browser cache memory for a faster loading time.
+**Browser Cache:** Reduces your loading time by saving the most requested contents from your website like images, code and even texts in the users’ browser cache memory for a faster loading time. 
 
 **CDN Caching:** The integrated CDN saves copies of frequently accessed contents like images, codes and text in 300+ edge servers around the world & serves the contents from the nearest node when a user visits your website. The CDN cache reduces the loading time of your website for visitors from any part of the world.
 
@@ -48,7 +48,7 @@ Keeps your WordPress admin light & eliminates the chances of conflicts among opt
 
 **Lazy Loading:** Sets priority for loading the contents of your website. Contents like images that are in the visible area of your website are loaded immediately and others are loaded only when needed. This reduces the initial loading time.
 
-**Critical CSS Generator:** On average, every page on a website contains 2 MB of CSS code, which takes significant time to render. [critical css](https://rabbitloader.com/articles/critical-css/ "critical css") is usually only 5% of the size of the original files & reduces rendering time by 90%, making it possible to achieve a very high score PageSpeed Insight & pass the Core Web Vitals.
+**Critical CSS Generator:** On average, every page on a website contains 2 MB of CSS code, which takes significant time to render. [critical css](https://rabbitloader.com/articles/critical-css/ "critical css") is usually only 5% of the size of the original files & reduces rendering time by 90%, making it possible to achieve a very high score PageSpeed Insight & pass the Core Web Vitals. 
 
 **JavaScript Deferring:** Execution of JavaScript files that are not needed immediately upon loading the website are delayed to load the website faster.
 
@@ -56,7 +56,7 @@ Keeps your WordPress admin light & eliminates the chances of conflicts among opt
 
 **What is Advanced Cache?**
 
-Advanced cache allows your website to reach lightning-fast performance levels.
+Advanced cache allows your website to reach lightning-fast performance levels. 
 
 It involves techniques to store the most requested content of your website like images, texts & text to be stored in the browser cache and on the CDN cache. The [Content Delivery Network](https://rabbitloader.com/origin-savings/ "Content Delivery Network") (CDN) serves the cached content to your visitors around the world as quickly as possible.
 
@@ -165,7 +165,7 @@ Optimization time for the entire website depends on the number of pages; on aver
 
 Most websites using RabbitLoader reach an average PageSpeed score of over 90 for most of their web pages.
 
-Home pages usually score lower than other pages on your website as it usually contains sliders and other heavy graphics and scripts.
+Home pages usually score lower than other pages on your website as it usually contains sliders and other heavy graphics and scripts. 
 
 If you have Ads or analytics running on your pages you can either choose to run those scripts first which would lower your score or you can delay them & improve the score further.
 
@@ -173,7 +173,7 @@ Some pages on your website might even score a perfect 100 with RabbitLoader.
 
 = Would it help me pass Core Web Vitals? =
 
-Core Web Vitals is the 28-day average of your real visitors’ user experience.
+Core Web Vitals is the 28-day average of your real visitors’ user experience. 
 
 Since it's an average of 28 days, if your Core Web Vitals were failing before installing the RabbitLoader plugin it would take 3 to 4 weeks for your average user experience to improve and for your website to pass the Core Web Vitals.
 
@@ -193,7 +193,7 @@ Yes, RabbitLoader optimizes both desktop and mobile versions of your website. Ra
 
 = I need help optimizing my website, can you help me? =
 
-Yes, our dedicated support team will help you install and activate RabbitLoader and resolve any issues you might face. You can [create a support ticket](https://rabbitloader.com/contact/ "create a support ticket") or start a live chat for assistance.
+Yes, our dedicated support team will help you install and activate RabbitLoader and resolve any issues you might face. You can [create a support ticket](https://rabbitloader.com/contact/ "create a support ticket") or start a live chat for assistance. 
 
 = Would speed optimization break my website’s design? =
 
@@ -217,6 +217,11 @@ Yes, you can use the RabbitLoader WordPress plugin even if you have Cloudflare o
 5. Integrated Content Delivery Network
 
 == Changelog ==
+
+= 3.0.5 =
+* Added secure WordPress admin proof bridge for reconnect flow.
+* Improved connection recovery preparation for sites previously linked to another account.
+* Tested compatibility with WordPress 7.0.
 
 = 3.0.4 =
 * Tested with WordPress 7.0.
@@ -265,8 +270,8 @@ Yes, you can use the RabbitLoader WordPress plugin even if you have Cloudflare o
 * Bugfix in purge functionality
 
 = 2.19.19 =
-* Prevent warnings when Apache server headers are missing
-* Faster optimization
+* Prevent warnings when Apache server headers are missing 
+* Faster optimization 
 
 = 2.19.18 =
 * Invalidate cache when Me mode is toggled
@@ -291,7 +296,7 @@ Yes, you can use the RabbitLoader WordPress plugin even if you have Cloudflare o
 * Enhancements for plugin re-install scenarios
 
 = 2.19.12 =
-* Bugfix related to feedback request message not hiding
+* Bugfix related to feedback request message not hiding 
 
 = 2.19.11 =
 * Enhancements for Nginx users
@@ -329,7 +334,7 @@ Yes, you can use the RabbitLoader WordPress plugin even if you have Cloudflare o
 = 2.19.1 =
 * Improved cache hit ratio
 * Compatibility fixes for the IF-SO plugin
-* Improved page detection for websites built with Elementor
+* Improved page detection for websites built with Elementor 
 
 = 2.18.9 =
 * Bugfix related to critical CSS not shown correctly in some cases

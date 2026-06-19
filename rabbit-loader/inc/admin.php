@@ -39,6 +39,11 @@ class RabbitLoader_21_Admin
                 }
 
                 wp_enqueue_script('rabbitloader-conflict-guard', RABBITLOADER_PLUG_URL . 'admin/js/conflict-guard.js', ['rabbitloader-index'], RABBITLOADER_PLUG_VERSION, true);
+                $proof_config = wp_json_encode(self::getConnectProofConfig(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+                if ($proof_config !== false) {
+                    wp_add_inline_script('rabbitloader-index', 'window.RLConnectProofConfig = ' . $proof_config . ';', 'before');
+                }
+                wp_enqueue_script('rabbitloader-connect-proof', RABBITLOADER_PLUG_URL . 'admin/js/connect-proof.js', ['rabbitloader-index'], RABBITLOADER_PLUG_VERSION, true);
             }
             if ($is_rl_page && self::isPluginActivated()) {
                 $boot_data = wp_json_encode(self::getAdminBootData(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
@@ -244,6 +249,65 @@ class RabbitLoader_21_Admin
             }
 
             RabbitLoader_21_Core::sendJsonResponse(self::getAdminBootData());
+        });
+        add_action('wp_ajax_rabbitloader_connect_proof', function () {
+            RL21UtilWP::verifyAjaxNonce();
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            $challenge_id = isset($_POST['challenge_id']) ? sanitize_text_field(wp_unslash($_POST['challenge_id'])) : '';
+            $challenge_nonce = isset($_POST['challenge_nonce']) ? sanitize_text_field(wp_unslash($_POST['challenge_nonce'])) : '';
+            $site_url = isset($_POST['site_url']) ? esc_url_raw(wp_unslash($_POST['site_url'])) : '';
+
+            if (empty($challenge_id) || empty($challenge_nonce) || empty($site_url)) {
+                wp_send_json_error(['message' => 'Missing reconnect challenge data.'], 400);
+                return;
+            }
+
+            $site_host = self::normalizeConnectProofHost($site_url);
+            $home_host = self::normalizeConnectProofHost(home_url());
+            if (empty($site_host) || empty($home_host) || $site_host !== $home_host) {
+                wp_send_json_error(['message' => 'Reconnect challenge site mismatch.'], 400);
+                return;
+            }
+
+            $response = wp_remote_post(RabbitLoader_21_Core::getRLDomainV2() . 'domain/v2/reconnect-challenge/redeem', [
+                'timeout' => 15,
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'body' => wp_json_encode([
+                    'challenge_id' => $challenge_id,
+                    'challenge_nonce' => $challenge_nonce,
+                    'site_url' => home_url(),
+                    'plugin_version' => RABBITLOADER_PLUG_VERSION,
+                    'wp_admin_url' => admin_url('admin.php?page=rabbitloader'),
+                ]),
+            ]);
+
+            if (is_wp_error($response)) {
+                wp_send_json_error(['message' => 'Could not redeem reconnect challenge.'], 502);
+                return;
+            }
+
+            $status = (int) wp_remote_retrieve_response_code($response);
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+            if ($status !== 200 || empty($body['result']) || empty($body['redeem_token'])) {
+                wp_send_json_error(['message' => 'Reconnect challenge was not accepted.'], $status >= 400 ? $status : 400);
+                return;
+            }
+
+            $result = [
+                'result' => true,
+                'challenge_id' => $challenge_id,
+                'redeem_token' => sanitize_text_field($body['redeem_token']),
+                'expires_at' => isset($body['expires_at']) ? intval($body['expires_at']) : 0,
+            ];
+            RabbitLoader_21_Core::sendJsonResponse($result);
         });
         add_action('wp_ajax_rabbitloader_save_keys', function () {
             $json_body = json_decode(file_get_contents('php://input'), true);
@@ -549,8 +613,10 @@ class RabbitLoader_21_Admin
 
     protected static function isPluginActivated()
     {
+        $api_token = RabbitLoader_21_Core::getWpOptVal('api_token');
+        $did = RabbitLoader_21_Core::getWpOptVal('did');
 
-        return !empty(RabbitLoader_21_Core::getWpOptVal('api_token'));
+        return !empty($api_token) && preg_match('/^[a-f0-9]{24}$/i', $did) === 1;
     }
 
     protected static function getAdminBootData()
@@ -569,6 +635,34 @@ class RabbitLoader_21_Admin
             'plan_title' => isset($overview['plan_title']) ? $overview['plan_title'] : '',
             'home_page_url_id' => isset($overview['home_page_url_id']) ? $overview['home_page_url_id'] : ''
         ];
+    }
+
+    protected static function getConnectProofConfig()
+    {
+        $allowed_origins = RabbitLoader_21_Util_Core::isDev()
+            ? ['https://dash.rabbitloader.local', 'http://localhost:3000', 'https://dash.rabbitloader.com']
+            : ['https://dash.rabbitloader.com'];
+
+        return [
+            'admin_ajax' => admin_url('admin-ajax.php'),
+            'rl_nonce' => wp_create_nonce('rl-ajax-nonce'),
+            'home_url' => home_url(),
+            'wp_admin_url' => admin_url('admin.php?page=rabbitloader'),
+            'plugin_version' => RABBITLOADER_PLUG_VERSION,
+            'can_manage_options' => current_user_can('manage_options'),
+            'allowed_dashboard_origins' => $allowed_origins,
+        ];
+    }
+
+    protected static function normalizeConnectProofHost($url)
+    {
+        $host = wp_parse_url($url, PHP_URL_HOST);
+        if (empty($host)) {
+            return '';
+        }
+
+        $host = strtolower($host);
+        return preg_replace('/^www\./', '', $host);
     }
 
     public static function admin_notices()
