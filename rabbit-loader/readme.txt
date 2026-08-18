@@ -4,7 +4,7 @@ Contributors: sanrl, abhishekgr
 Tags: cache, caching, speed optimization, pagespeed insights, core web vitals
 Requires at least: 4.7
 Tested up to: 7.0
-Stable tag: 3.0.5
+Stable tag: 3.1.0
 Requires PHP: 5.6
 License: GNU General Public License, version 2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -217,6 +217,12 @@ Yes, you can use the RabbitLoader WordPress plugin even if you have Cloudflare o
 5. Integrated Content Delivery Network
 
 == Changelog ==
+
+= 3.1.0 =
+
+* Added an admin impact panel with refresh support.
+* Updated the admin chat widget experience.
+* Added backend support for impact data refresh requests.
 
 = 3.0.5 =
 * Added secure WordPress admin proof bridge for reconnect flow.

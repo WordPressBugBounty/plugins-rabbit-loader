@@ -192,6 +192,64 @@ class RabbitLoader_21_Core
         return $http;
     }
 
+    public static function &callPOSTAPIV2($endpoint, $body, &$apiError, &$apiMessage)
+    {
+        $http = [];
+        $args = [];
+        $apiError = true;
+        if (!RabbitLoader_21_Core::addKeys($args, $rabbitloader_field_domain)) {
+            $apiError = 'Keys could not be added';
+            return $http;
+        }
+        $url = RabbitLoader_21_Core::getRLDomainV2();
+        $args['method'] = 'POST';
+        $args['headers']['Content-Type'] = 'application/json';
+
+        try {
+            if (stripos($endpoint, '{domain_id}')) {
+                $did = RabbitLoader_21_Core::getWpOptVal('did');
+                if (empty($did)) {
+                    $apiError = 'Please disconnect the plugin and connect again.';
+                    return $http;
+                }
+                $endpoint = str_ireplace('{domain_id}', $did, $endpoint);
+            }
+
+            $args['body'] = wp_json_encode(is_array($body) ? $body : []);
+            $http = wp_remote_post($url . $endpoint, $args);
+            $code = wp_remote_retrieve_response_code($http);
+            if (is_wp_error($http)) {
+                $apiError = true;
+                $apiMessage = $http->get_error_message();
+                if (empty($apiMessage)) {
+                    $apiMessage = '';
+                }
+                if (self::isTemporaryError($apiMessage)) {
+                    //chill, it happens
+                } else {
+                    RabbitLoader_21_Core::on_exception($http);
+                }
+            }
+
+            if (in_array($code, [401, 403])) {
+                $apiError = true;
+                $apiMessage = "Unauthorized access. Please disconnect and Login again.";
+                RabbitLoader_21_Core::update_api_tokens('', '', '', "$code when $endpoint was called");
+            } else {
+                $apiError = $code < 200 || $code >= 300;
+            }
+        } catch (Throwable $e) {
+            RabbitLoader_21_Core::on_exception($e);
+            $apiError = true;
+            $apiMessage = $e->getMessage();
+        }
+        $http['body'] = json_decode(wp_remote_retrieve_body($http), true);
+        if (!$apiError && empty($apiMessage) && is_array($http['body']) && !empty($http['body']['message'])) {
+            $apiMessage = $http['body']['message'];
+        }
+        return $http;
+    }
+
     public static function &callPostApi($endpoint, $body, &$apiError, &$apiMessage)
     {
         $http = [];
@@ -567,21 +625,13 @@ class RabbitLoader_21_Core
     public static function get_recent_posts(&$offset, &$posts_per_page, &$published_count, &$permalinks)
     {
         $permalinks = [];
-        $posts_per_page = 250;
         $queued_count = 0;
-
-        if ($posts_per_page < 0 || $posts_per_page > 250) {
-            $posts_per_page = 250;
-        }
 
         //$latest_modified_ts = 0;
         //published posts
         $published_count = RabbitLoader_21_Core::get_published_count();
 
-        $offset = intval($offset);
-        if ($offset > $published_count) {
-            $offset = 0;
-        }
+        self::sanitize_recent_posts_pagination($offset, $posts_per_page, $published_count);
 
         $permalink_structure = get_option('permalink_structure');
         $append_slash = substr($permalink_structure, -1) == "/" ? true : false;
@@ -624,6 +674,21 @@ class RabbitLoader_21_Core
         } catch (Throwable $e) {
             $responses['exception'] = true;
             RabbitLoader_21_Core::on_exception($e);
+        }
+    }
+
+    protected static function sanitize_recent_posts_pagination(&$offset, &$posts_per_page, $published_count)
+    {
+        $posts_per_page = intval($posts_per_page);
+        if ($posts_per_page < 1) {
+            $posts_per_page = 10;
+        } elseif ($posts_per_page > 250) {
+            $posts_per_page = 250;
+        }
+
+        $offset = intval($offset);
+        if ($offset < 0 || $offset > intval($published_count)) {
+            $offset = 0;
         }
     }
 

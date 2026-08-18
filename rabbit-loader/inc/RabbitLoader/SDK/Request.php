@@ -398,7 +398,20 @@ class Request
             return;
         }
 
-        $api = new API($this->licenseKey, $this->platform);
+        $connectedHost = $this->normalizeComparableHost(\RabbitLoader_21_Core::getWpOptVal('domain'));
+        $runtimeHost = $this->normalizeComparableHost($url);
+        if (!empty($connectedHost) && !empty($runtimeHost) && strcmp($connectedHost, $runtimeHost) !== 0) {
+            error_log('RabbitLoader optimize blocked: ' . json_encode([
+                'connected_host' => $connectedHost,
+                'runtime_host' => $runtimeHost,
+                'reason' => 'host_mismatch_reconnect_required',
+            ], JSON_INVALID_UTF8_IGNORE));
+            Util::sendHeader('x-rl-skip: host-mismatch-reconnect-required', true);
+            $this->terminateRefresh();
+            return;
+        }
+
+        $api = $this->createAPI();
         $api->setDebug($this->debug);
 
         //send HB before refresh to unblock previous un-installation if any
@@ -437,6 +450,40 @@ class Request
                 Util::sendHeader('x-rl-res-msg-empty: 1', true);
             }
         }
+        $this->terminateRefresh();
+        return;
+    }
+
+    private function normalizeComparableHost($hostOrUrl)
+    {
+        if (!is_string($hostOrUrl)) {
+            return '';
+        }
+
+        $hostOrUrl = trim($hostOrUrl);
+        if ($hostOrUrl === '') {
+            return '';
+        }
+
+        $parsedHost = parse_url($hostOrUrl, PHP_URL_HOST);
+        if (empty($parsedHost) && strpos($hostOrUrl, '://') === false && strpos($hostOrUrl, '/') === false) {
+            $parsedHost = parse_url('https://' . $hostOrUrl, PHP_URL_HOST);
+        }
+        if (empty($parsedHost)) {
+            return '';
+        }
+
+        $parsedHost = strtolower(trim($parsedHost));
+        return preg_replace('/^www\./i', '', $parsedHost);
+    }
+
+    protected function createAPI()
+    {
+        return new API($this->licenseKey, $this->platform);
+    }
+
+    protected function terminateRefresh()
+    {
         exit;
     }
 

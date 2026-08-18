@@ -50,6 +50,13 @@ class RabbitLoader_21_Admin
                 if ($boot_data !== false) {
                     wp_add_inline_script('rabbitloader-index', 'window.rabbitloader_local_vars = ' . $boot_data . ';', 'before');
                 }
+                wp_enqueue_script(
+                    'rabbitloader-admin-enhancements',
+                    RABBITLOADER_PLUG_URL . 'admin/js/admin-enhancements.js',
+                    [],
+                    RABBITLOADER_PLUG_VERSION,
+                    true
+                );
             }
         });
 
@@ -249,6 +256,28 @@ class RabbitLoader_21_Admin
             }
 
             RabbitLoader_21_Core::sendJsonResponse(self::getAdminBootData());
+        });
+        add_action('wp_ajax_rabbitloader_impact_data', function () {
+            RL21UtilWP::verifyAjaxNonce();
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            $response = self::getImpactDataResponse();
+            RabbitLoader_21_Core::sendJsonResponse($response);
+        });
+        add_action('wp_ajax_rabbitloader_impact_refresh', function () {
+            RL21UtilWP::verifyAjaxNonce();
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(null, 403);
+                return;
+            }
+
+            $response = self::refreshImpactDataResponse();
+            RabbitLoader_21_Core::sendJsonResponse($response);
         });
         add_action('wp_ajax_rabbitloader_connect_proof', function () {
             RL21UtilWP::verifyAjaxNonce();
@@ -633,8 +662,182 @@ class RabbitLoader_21_Admin
             'did' => RabbitLoader_21_Core::getWpOptVal('did'),
             'domain' => RabbitLoader_21_Core::getWpOptVal('domain'),
             'plan_title' => isset($overview['plan_title']) ? $overview['plan_title'] : '',
-            'home_page_url_id' => isset($overview['home_page_url_id']) ? $overview['home_page_url_id'] : ''
+            'home_page_url_id' => isset($overview['home_page_url_id']) ? $overview['home_page_url_id'] : '',
+            'published_url_count' => isset($overview['published_url_count']) ? intval($overview['published_url_count']) : 0,
+            'canonical_url_count' => isset($overview['canonical_url_count']) ? intval($overview['canonical_url_count']) : 0,
+            'optimized_url_count' => isset($overview['optimized_url_count']) ? intval($overview['optimized_url_count']) : 0,
+            'impact_actions' => [
+                'fetch' => 'rabbitloader_impact_data',
+                'refresh' => 'rabbitloader_impact_refresh',
+            ],
         ];
+    }
+
+    protected static function getImpactDataResponse()
+    {
+        $response = [
+            'result' => false,
+            'data' => [
+                'last_checked' => '',
+                'metrics' => [],
+            ],
+            'message' => '',
+        ];
+
+        $http = RabbitLoader_21_Core::callGETAPIV2('billing/{domain_id}/impact', $apiError, $apiMessage);
+        if ($apiError) {
+            $response['message'] = empty($apiMessage) ? 'Unable to fetch impact data.' : $apiMessage;
+            return $response;
+        }
+
+        $response['result'] = true;
+        $response['data'] = self::normalizeImpactPayload(isset($http['body']['data']) ? $http['body']['data'] : []);
+        return $response;
+    }
+
+    protected static function refreshImpactDataResponse()
+    {
+        $response = [
+            'result' => false,
+            'data' => [
+                'last_checked' => '',
+                'metrics' => [],
+            ],
+            'message' => '',
+        ];
+
+        $http = RabbitLoader_21_Core::callPOSTAPIV2('billing/{domain_id}/impact/refresh', [], $apiError, $apiMessage);
+        if ($apiError) {
+            $response['message'] = empty($apiMessage) ? 'Unable to refresh impact data.' : $apiMessage;
+            return $response;
+        }
+
+        $response['result'] = true;
+        $response['data'] = self::normalizeImpactPayload(isset($http['body']['data']) ? $http['body']['data'] : []);
+        $response['message'] = empty($apiMessage) ? 'Impact refresh requested.' : $apiMessage;
+        return $response;
+    }
+
+    protected static function normalizeImpactPayload($data)
+    {
+        $normalized = [
+            'last_checked' => '',
+            'metrics' => [],
+        ];
+
+        if (!is_array($data)) {
+            return $normalized;
+        }
+
+        $normalized['last_checked'] = self::extractImpactLastChecked($data);
+
+        foreach (['lcp', 'tbt', 'speed_index'] as $metric_key) {
+            $normalized['metrics'][$metric_key] = self::extractImpactMetric($data, $metric_key);
+        }
+
+        return $normalized;
+    }
+
+    protected static function extractImpactLastChecked($data)
+    {
+        $candidates = [
+            'last_checked',
+            'lastChecked',
+            'checked_at',
+            'checkedAt',
+            'updated_at',
+            'updatedAt',
+            'generated_at',
+            'generatedAt',
+        ];
+
+        foreach ($candidates as $candidate) {
+            if (!empty($data[$candidate]) && is_scalar($data[$candidate])) {
+                return (string) $data[$candidate];
+            }
+        }
+
+        if (!empty($data['meta']) && is_array($data['meta'])) {
+            return self::extractImpactLastChecked($data['meta']);
+        }
+
+        return '';
+    }
+
+    protected static function extractImpactMetric($data, $metric_key)
+    {
+        $metric = [
+            'before' => null,
+            'after' => null,
+        ];
+
+        $sources = [];
+        if (!empty($data[$metric_key]) && is_array($data[$metric_key])) {
+            $sources[] = $data[$metric_key];
+        }
+        if (!empty($data['metrics']) && is_array($data['metrics']) && !empty($data['metrics'][$metric_key]) && is_array($data['metrics'][$metric_key])) {
+            $sources[] = $data['metrics'][$metric_key];
+        }
+        if (!empty($data['impact']) && is_array($data['impact']) && !empty($data['impact'][$metric_key]) && is_array($data['impact'][$metric_key])) {
+            $sources[] = $data['impact'][$metric_key];
+        }
+
+        foreach ($sources as $source) {
+            $before = self::extractImpactValue($source, ['before', 'without', 'without_rabbitloader', 'baseline', 'original']);
+            $after = self::extractImpactValue($source, ['after', 'with', 'with_rabbitloader', 'optimized']);
+
+            if ($before !== null) {
+                $metric['before'] = $before;
+            }
+            if ($after !== null) {
+                $metric['after'] = $after;
+            }
+            if ($metric['before'] !== null || $metric['after'] !== null) {
+                break;
+            }
+        }
+
+        return $metric;
+    }
+
+    protected static function extractImpactValue($source, $candidate_keys)
+    {
+        foreach ($candidate_keys as $key) {
+            if (array_key_exists($key, $source)) {
+                return self::sanitizeImpactNumber($source[$key]);
+            }
+        }
+
+        foreach ($candidate_keys as $key) {
+            if (!empty($source[$key]) && is_array($source[$key])) {
+                $nested = self::extractImpactValue($source[$key], ['value', 'metric', 'ms']);
+                if ($nested !== null) {
+                    return $nested;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    protected static function sanitizeImpactNumber($value)
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (is_numeric($value)) {
+            return floatval($value);
+        }
+
+        if (is_string($value)) {
+            $clean = preg_replace('/[^0-9.\-]/', '', $value);
+            if ($clean !== '' && is_numeric($clean)) {
+                return floatval($clean);
+            }
+        }
+
+        return null;
     }
 
     protected static function getConnectProofConfig()
