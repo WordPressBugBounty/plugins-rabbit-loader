@@ -16,7 +16,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
 
 ?>
 
-        <div class="wrap rl-admin-wrap" id="rabbitloader-admin-wrap">
+        <div class="wrap">
             <?php
             try {
                 $tab = self::decideTabToShow($isConnected);
@@ -142,7 +142,6 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
         $overview = [
             'score_circle_best' => 0,
             'score_circle_avg' => 0,
-            'published_url_count' => 0,
             'canonical_url_count' => 0,
             'optimized_url_count' => 0,
             'optimized_url_per' => 0,
@@ -174,8 +173,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
             }
         }
 
-        $published_url_count = RabbitLoader_21_Core::get_published_count();
-        $overview['published_url_count'] = intval($published_url_count);
+        $expected_url_count = RabbitLoader_21_Core::get_published_count();
 
         if (!empty($http['body']['data']['speed_score']['max_score'])) {
             $overview['score_circle_best'] = intval($http['body']['data']['speed_score']['max_score'] * 100);
@@ -185,8 +183,14 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
             $overview['score_circle_avg'] = intval($http['body']['data']['speed_score']['avg_score'] * 100);
         }
 
-        $speed_score = isset($http['body']['data']['speed_score']) && is_array($http['body']['data']['speed_score']) ? $http['body']['data']['speed_score'] : [];
-        self::applyOverviewCounts($overview, $speed_score, $published_url_count, RabbitLoader_21_Core::getCacheCount());
+        if (!empty($http['body']['data']['speed_score']['canonical_url_count'])) {
+            $canonical_url_count = intval($http['body']['data']['speed_score']['canonical_url_count']);
+            $overview['canonical_url_count'] = max($canonical_url_count, $expected_url_count);
+        }
+
+        if (!empty($http['body']['data']['speed_score']['optimized_url_count'])) {
+            $overview['optimized_url_count'] = 0;
+        }
 
         if (!empty($http['body']['data']['bill']['end_date'])) {
             $overview['plan_end_date'] = $http['body']['data']['bill']['end_date'];
@@ -209,6 +213,11 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
         $overview['pv_remaining'] = $overview['pv_quota'] - $overview['pv_used'];
         $overview['pp_used'] = $overview['pv_quota'] > 0 ? round(($overview['pv_used'] / $overview['pv_quota']) * 100, 0) : 0;
 
+        $overview['optimized_url_count'] = RabbitLoader_21_Core::getCacheCount();
+        if ($overview['optimized_url_count'] > $overview['canonical_url_count']) {
+            //local cache might have removed URLs
+            $overview['optimized_url_count'] = $overview['canonical_url_count'];
+        }
         $optimized_url_per = empty($overview['canonical_url_count']) ? 0 : ($overview['optimized_url_count'] / $overview['canonical_url_count']) * 100;
         $overview['optimized_url_per'] = round($optimized_url_per, 1);
 
@@ -227,31 +236,6 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
 
         set_transient('rabbitloader_trans_overview_data', $overview, 60);
         return $overview;
-    }
-
-    protected static function applyOverviewCounts(&$overview, $speed_score, $published_url_count, $fallback_optimized_url_count)
-    {
-        $overview['published_url_count'] = max(0, intval($published_url_count));
-        $overview['canonical_url_count'] = self::readOverviewCount($speed_score, 'canonical_url_count');
-
-        if (array_key_exists('optimized_url_count', $speed_score) && $speed_score['optimized_url_count'] !== null && $speed_score['optimized_url_count'] !== '') {
-            $overview['optimized_url_count'] = max(0, intval($speed_score['optimized_url_count']));
-            return;
-        }
-
-        $overview['optimized_url_count'] = max(0, intval($fallback_optimized_url_count));
-        if ($overview['optimized_url_count'] > $overview['canonical_url_count']) {
-            //local cache might have removed URLs
-            $overview['optimized_url_count'] = $overview['canonical_url_count'];
-        }
-    }
-
-    protected static function readOverviewCount($source, $key)
-    {
-        if (!is_array($source) || !array_key_exists($key, $source) || $source[$key] === null || $source[$key] === '') {
-            return 0;
-        }
-        return max(0, intval($source[$key]));
     }
 
     protected static function quota_used_box(&$overview, $show_arrow)
@@ -376,10 +360,7 @@ class RabbitLoader_21_Tab_Init extends RabbitLoader_21_Admin
             'rl_nonce' => wp_create_nonce('rl-ajax-nonce'),
             'api_token' => RabbitLoader_21_Core::getWpOptVal('api_token'),
             'plan_title' => isset($overview['plan_title']) ? $overview['plan_title'] : '',
-            'home_page_url_id' => isset($overview['home_page_url_id']) ? $overview['home_page_url_id'] : '',
-            'published_url_count' => isset($overview['published_url_count']) ? intval($overview['published_url_count']) : 0,
-            'canonical_url_count' => isset($overview['canonical_url_count']) ? intval($overview['canonical_url_count']) : 0,
-            'optimized_url_count' => isset($overview['optimized_url_count']) ? intval($overview['optimized_url_count']) : 0
+            'home_page_url_id' => isset($overview['home_page_url_id']) ? $overview['home_page_url_id'] : ''
         ];
         //wp_add_inline_script('rabbitloader-index', 'RLAdmin.Tab(window, ' . json_encode($tabVars) . ');');
         echo '<script>RLAdmin.Tab(window, ' . json_encode($tabVars) . ');</script>';

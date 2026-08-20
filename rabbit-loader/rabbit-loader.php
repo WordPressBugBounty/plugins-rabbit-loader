@@ -6,7 +6,7 @@
  * Author:       RabbitLoader
  * Author URI:   https://rabbitloader.com/
  * Description: RabbitLoader can improve Google PageSpeed score and get you 100 out of 100 by improving the page load time to just a few milliseconds. It improves the Core Web Vitals score for your pages and boost PageSpeed score to help better search rankings and best the experience for your end user.
- * Version: 3.1.0
+ * Version: 3.1.1
  * Text Domain: rabbit-loader
  */
 /*
@@ -134,3 +134,4 @@ if (is_admin()) {
 if (defined("WP_CLI") && WP_CLI) {
     include_once($plug_dir . 'wp-cli.php');
 }
+
