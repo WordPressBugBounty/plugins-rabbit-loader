@@ -1,10 +1,10 @@
-=== RabbitLoader Cache: Optimize your Website for Speed ===
+﻿=== RabbitLoader Cache: Optimize your Website for Speed ===
 
 Contributors: sanrl, abhishekgr
 Tags: cache, caching, speed optimization, pagespeed insights, core web vitals
 Requires at least: 4.7
 Tested up to: 7.0
-Stable tag: 3.1.1
+Stable tag: 3.2.0
 Requires PHP: 5.6
 License: GNU General Public License, version 2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -15,7 +15,7 @@ RabbitLoader cache is an all-in-one performance optimization plugin. It Speeds u
 
 RabbitLoader is a WordPress cache plugin that helps speed up your WordPress and WooCommerce websites.
 
-RabbitLoader’s Caching techniques improve the performance of your website, reduce the loading times, and help you score over 90 on [PageSpeed Insight](https://pagespeed.web.dev/ "PageSpeed Insight"). It also helps you pass the Core Web Vitals by optimizing the performance of your WordPress website.
+RabbitLoaderâ€™s Caching techniques improve the performance of your website, reduce the loading times, and help you score over 90 on [PageSpeed Insight](https://pagespeed.web.dev/ "PageSpeed Insight"). It also helps you pass the Core Web Vitals by optimizing the performance of your WordPress website.
 
 To optimize your WordPress website for the best possible speed, [RabbitLoader](https://rabbitloader.com/ "RabbitLoader") implements both browser cache & CDN cache. This makes your website load much faster, with results visible immediately after installation.
 
@@ -40,7 +40,7 @@ Keeps your WordPress admin light & eliminates the chances of conflicts among opt
 
 **Features**
 
-**Browser Cache:** Reduces your loading time by saving the most requested contents from your website like images, code and even texts in the users’ browser cache memory for a faster loading time. 
+**Browser Cache:** Reduces your loading time by saving the most requested contents from your website like images, code and even texts in the usersâ€™ browser cache memory for a faster loading time. 
 
 **CDN Caching:** The integrated CDN saves copies of frequently accessed contents like images, codes and text in 300+ edge servers around the world & serves the contents from the nearest node when a user visits your website. The CDN cache reduces the loading time of your website for visitors from any part of the world.
 
@@ -130,13 +130,13 @@ RabbitLoader cache plugin is compatible with all major WordPress themes, plugins
 *   Liquid Web
 **And more..**
 
-**SHARE THE RABBITLOADER** 💗
+**SHARE THE RABBITLOADER** ðŸ’—
 
 * Join our- [Facebook Community](https://www.facebook.com/Rabbitloader/ "Facebook Community").
 * Learn from our tutorials on [YouTube Channel](https://www.youtube.com/@rabbitloader827 "YouTube Channel").
-* Contribute to [RabbitLoader’s translations](https://translate.wordpress.org/projects/wp-plugins/rabbit-loader/ "RabbitLoader’s translations").
+* Contribute to [RabbitLoaderâ€™s translations](https://translate.wordpress.org/projects/wp-plugins/rabbit-loader/ "RabbitLoaderâ€™s translations").
 * Or rate us on WordPress [WordPress](https://wordpress.org/support/plugin/rabbit-loader/reviews/?filter=5#new-post
- "WordPress")🙂
+ "WordPress")ðŸ™‚
 
 == Frequently Asked Questions ==
 
@@ -159,7 +159,7 @@ The improvement of the speed would reflect instantly after installing the plugin
 
 We start by optimizing your home page & you can see the difference in PageSpeed score immediately on Google PSI or the RabbitLoader console after installation.
 
-Optimization time for the entire website depends on the number of pages; on average a medium size website takes around 15 minutes to optimize and cache your website’s contents
+Optimization time for the entire website depends on the number of pages; on average a medium size website takes around 15 minutes to optimize and cache your websiteâ€™s contents
 
 = What score would I achieve on the PageSeed Insights test? =
 
@@ -173,7 +173,7 @@ Some pages on your website might even score a perfect 100 with RabbitLoader.
 
 = Would it help me pass Core Web Vitals? =
 
-Core Web Vitals is the 28-day average of your real visitors’ user experience. 
+Core Web Vitals is the 28-day average of your real visitorsâ€™ user experience. 
 
 Since it's an average of 28 days, if your Core Web Vitals were failing before installing the RabbitLoader plugin it would take 3 to 4 weeks for your average user experience to improve and for your website to pass the Core Web Vitals.
 
@@ -189,15 +189,15 @@ Yes, RabbitLoader is fully compatible with WooCommerce. It is also compatible wi
 
 = Does RabbitLoader do mobile optimization? =
 
-Yes, RabbitLoader optimizes both desktop and mobile versions of your website. RabbitLoader’s caching techniques improve the PageSpeed score of your mobile website too.
+Yes, RabbitLoader optimizes both desktop and mobile versions of your website. RabbitLoaderâ€™s caching techniques improve the PageSpeed score of your mobile website too.
 
 = I need help optimizing my website, can you help me? =
 
 Yes, our dedicated support team will help you install and activate RabbitLoader and resolve any issues you might face. You can [create a support ticket](https://rabbitloader.com/contact/ "create a support ticket") or start a live chat for assistance. 
 
-= Would speed optimization break my website’s design? =
+= Would speed optimization break my websiteâ€™s design? =
 
-We have extensively tested RabbitLoader with all major themes & plugins to ensure the optimization doesn’t disrupt your website. We are currently serving thousands of websites without issues.
+We have extensively tested RabbitLoader with all major themes & plugins to ensure the optimization doesnâ€™t disrupt your website. We are currently serving thousands of websites without issues.
 
 If you have a custom development or design on a page and the design is being disrupted after installing RabbitLoader, you can [exclude the pages](https://rabbitloader.com/kb/exclude-urls-from-cached/ "exclude the pages") from optimization or even pause the optimization for the entire website & [contact our support](https://rabbitloader.com/contact/ "contact our support").
 
@@ -205,7 +205,7 @@ If you have a custom development or design on a page and the design is being dis
 
 Yes, The RabbitLoader has a free plan with all optimization features available. If you do not have a large website with many pages or high traffic, the free plan should work for you.
 
-= I’m using Cloudflare on my website, can I install RabbitLoader? =
+= Iâ€™m using Cloudflare on my website, can I install RabbitLoader? =
 Yes, you can use the RabbitLoader WordPress plugin even if you have Cloudflare on your website. You simply need to connect Cloudflare to the RabbitLoader plugin. You can read more about it [here](https://rabbitloader.com/kb/cloudflare-settings-for-best-performance/ "here").
 
 == Screenshots ==
@@ -237,7 +237,7 @@ Yes, you can use the RabbitLoader WordPress plugin even if you have Cloudflare o
 * Easy flow for plan upgrades
 
 = 2.22.3 =
-* Compatibility with MonsterInsights – Google Analytics Dashboard for WordPress plugin
+* Compatibility with MonsterInsights â€“ Google Analytics Dashboard for WordPress plugin
 * Bugfix: forgot password page from being cached when WP Admin path is customized
 
 = 2.22.2 =
