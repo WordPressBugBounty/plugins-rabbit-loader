@@ -1,11 +1,13 @@
 <?php
+/**
+ * RabbitLoader v5 intentionally leaves the existing RabbitLoader connection
+ * option in place on uninstall. The option is shared with the existing
+ * RabbitLoader runtime and deleting it here could destroy a valid connection
+ * during a rebuild/migration.
+ */
+
 if (!defined('WP_UNINSTALL_PLUGIN')) {
-    die;
+    exit;
 }
 
-define('RABBITLOADER_UNINSTALL_MODE', true);
-
-include_once('autoload.php');
-
-RabbitLoader_21_Admin::plugin_uninstall();
-
+delete_transient('rabbitloader_trans_overview_data');
