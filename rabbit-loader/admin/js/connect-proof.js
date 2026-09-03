@@ -4,6 +4,10 @@
     var savingToken = false;
     var proofInFlight = false;
 
+    // If the dashboard delivers a token but saving stalls, don't sit on
+    // "Saving…" forever. Fail open into a retry after this many ms.
+    var SAVE_TIMEOUT_MS = 20000;
+
     function config() {
         return window.RL5Config || {};
     }
@@ -21,6 +25,14 @@
     function status(message, type) {
         if (window.RL5ConnectUI && typeof window.RL5ConnectUI.status === 'function') {
             window.RL5ConnectUI.status(message, type);
+        }
+    }
+
+    function resetConnectButton() {
+        var button = document.getElementById('rl5-connect-button');
+        if (button) {
+            button.disabled = false;
+            button.textContent = button.dataset.originalLabel || 'Connect RabbitLoader';
         }
     }
 
@@ -88,6 +100,27 @@
             response: response,
             body: body
         };
+    }
+
+    // Rejects if the fetch doesn't settle within `ms`. Lets a stalled save
+    // surface as a clear retry instead of an endless "Saving…" spinner.
+    function withTimeout(promise, ms, message) {
+        return new Promise(function (resolve, reject) {
+            var timer = window.setTimeout(function () {
+                reject(new Error(message || 'Request timed out.'));
+            }, ms);
+
+            promise.then(
+                function (value) {
+                    window.clearTimeout(timer);
+                    resolve(value);
+                },
+                function (error) {
+                    window.clearTimeout(timer);
+                    reject(error);
+                }
+            );
+        });
     }
 
     async function postForm(values) {
@@ -219,11 +252,15 @@
 
         try {
             var cfg = config();
-            var result = await postForm({
-                action: 'rabbitloader_save_keys',
-                rl_nonce: cfg.nonce || '',
-                'rl-token': token
-            });
+            var result = await withTimeout(
+                postForm({
+                    action: 'rabbitloader_save_keys',
+                    rl_nonce: cfg.nonce || '',
+                    'rl-token': token
+                }),
+                SAVE_TIMEOUT_MS,
+                'Login completed but saving timed out. Please click Connect again.'
+            );
 
             debug('save token ajax', result.response.status, result.body);
 
@@ -245,12 +282,7 @@
             savingToken = false;
             debug('save token failed', error);
             status(error && error.message ? error.message : 'Could not save RabbitLoader connection.', 'error');
-
-            var button = document.getElementById('rl5-connect-button');
-            if (button) {
-                button.disabled = false;
-                button.textContent = button.dataset.originalLabel || 'Connect RabbitLoader';
-            }
+            resetConnectButton();
         }
     }
 

@@ -4,7 +4,7 @@ Tags: performance, pagespeed, cache, optimization
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 4.0
+Stable tag: 4.0.1
 License: GPLv2 or later
 
 RabbitLoader WordPress connection and performance dashboard.
@@ -24,7 +24,7 @@ The dashboard continues to read the existing RabbitLoader report/overview data.
 
 == Changelog ==
 
-= 4.0 =
+= 4.0.1 =
 * Remove the Optimization Profile / Rabbit Run / Bunny Hop block.
 * Keep Optimization focused on the URL list.
 * Tighten admin spacing, cards and tables using the proven legacy RabbitLoader visual proportions.

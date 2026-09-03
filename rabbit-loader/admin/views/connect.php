@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 <div class="wrap rl6-wrap rl6-connect-wrap">
     <header class="rl6-header rl6-header-connect">
         <img
-            src="<?php echo esc_url(RL5_URL . 'assets/rabbitloader-logo.png'); ?>"
+            src="<?php echo esc_url(RL5_URL . 'assets/logo-dark.svg'); ?>"
             class="rl6-logo rl6-logo-large"
             alt="RabbitLoader"
         >
