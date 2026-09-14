@@ -35,8 +35,18 @@ if ( ! defined( 'RL5_AC_ACTIVE' ) ) {
 
 			// Settings reads get_option(); WordPress option layer isn't loaded this
 			// early, so the runtime reads credentials via a tiny direct path.
-			require_once RL5_AC_PLUG_DIR . 'inc/class-rl-settings.php';
-			require_once RL5_AC_PLUG_DIR . 'inc/class-rl-runtime.php';
+                        $rl5_settings_file = RL5_AC_PLUG_DIR . 'inc/class-rl-settings.php';
+                        $rl5_runtime_file  = RL5_AC_PLUG_DIR . 'inc/class-rl-runtime.php';
+
+                        // WordPress temporarily removes/replaces the plugin directory
+                        // during an update. Never let the advanced-cache drop-in break
+                        // the site while those files are unavailable.
+                        if ( ! is_readable( $rl5_settings_file ) || ! is_readable( $rl5_runtime_file ) ) {
+                                return;
+                        }
+
+                        require_once $rl5_settings_file;
+                        require_once $rl5_runtime_file;
 
 			RL5_Runtime::process( 'ac' );
 		} catch ( \Throwable $e ) {

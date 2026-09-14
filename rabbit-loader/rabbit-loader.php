@@ -3,7 +3,7 @@
  * Plugin Name: RabbitLoader
  * Plugin URI: https://rabbitloader.com/
  * Description: RabbitLoader WordPress connection and performance dashboard.
- * Version: 4.0.1
+ * Version: 4.0.2
  * Author: Yogi Network
  * Author URI: https://rabbitloader.com/
  * License: GPLv2 or later
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('RL5_VERSION', '4.0.1');
+define('RL5_VERSION', '4.0.2');
 define('RL5_FILE', __FILE__);
 define('RL5_DIR', plugin_dir_path(__FILE__));
 define('RL5_URL', plugin_dir_url(__FILE__));
